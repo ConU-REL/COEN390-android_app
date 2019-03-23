@@ -27,15 +27,23 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class UserDataDisplay extends AppCompatActivity {
-
+   protected TextView user_name;
+   String username;
+   String id;
    protected ListView user_data_display;
     protected ImageView closeReconnect;
     protected Dialog reconnect;
     protected Button reconnect_button;
+
+    protected Dialog access;
+    protected Button access_button;
+
     private TextView subu_topic;
     String topicStr="DataDisplay";
+    double user_id=Math.random();
     MqttAndroidClient client;
     private ProgressBar user_progressBar;
     String MQTTHOST="tcp://broker.hivemq.com:1883";
@@ -45,13 +53,38 @@ public class UserDataDisplay extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_data_display);
+
         reconnect=new Dialog(this);
+        access=new Dialog(this);
+
         user_data_display=findViewById(R.id.user_data_display);
         subu_topic=findViewById(R.id.subu_topic);
         user_progressBar=findViewById(R.id.user_progressBar);
 
+        user_name=findViewById(R.id.user_name);
+        id=getIntent().getExtras().getString("ID");
+        username=getIntent().getExtras().getString("Value");
+        user_name.setText(username);
+        Show_access_popup();
         m_connect();
         loadListView();
+    }
+
+    private void Show_access_popup()
+    {
+        access.setContentView(R.layout.access_permision);
+        access_button=access.findViewById(R.id.access_button);
+        access_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                m_publish();
+                access.dismiss();
+            }
+        });
+        access.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        access.show();
+
     }
 
     private void m_connect()
@@ -158,6 +191,20 @@ public class UserDataDisplay extends AppCompatActivity {
 
             }
         });
+    }
+    public void m_publish()
+    {
+
+        String topic ="ConnectedUsers/"+id+"/online";
+        int qos=0;
+        //byte[] encodedPayload = new byte[0];
+        try {
+            //encodedPayload = message.getBytes("UTF-8");
+            //MqttMessage message = new MqttMessage(encodedPayload);
+            client.publish(topic, username.getBytes(),qos,false);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
     }
     public void goUserStart(View view)
     {
