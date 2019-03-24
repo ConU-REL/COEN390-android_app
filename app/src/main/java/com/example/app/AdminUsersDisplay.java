@@ -1,13 +1,14 @@
 package com.example.app;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -19,16 +20,21 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AdminUsersDisplay extends AppCompatActivity
 {
     protected ListView connected_users_list;
+    protected ListView disconnected_users_list;
+
     String MQTTHOST="tcp://broker.hivemq.com:1883";
     List<String> UserInputsList;
-    String topicStr="ConnectedUsers/+/online";
+    protected Button refress_button;
     MqttAndroidClient client;
-    private String income_message;
+
+    private ArrayList<String> adddataInputsListText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -36,7 +42,19 @@ public class AdminUsersDisplay extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_users_display);
         connected_users_list=findViewById(R.id.connected_users_list);
+        refress_button=findViewById(R.id.refresh_button);
         m_connect();
+        refress_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                finish();
+                startActivity(getIntent());
+
+
+            }
+        });
+
     }
     private void m_connect()
     {
@@ -55,7 +73,10 @@ public class AdminUsersDisplay extends AppCompatActivity
                 {
                     // We are connected
                     Log.d("In MQTT_Connection", "onSuccess");
-                    m_subscribe();
+
+                    //m_subscribe_delete();
+                    m_subscribe_add();
+
 
                 }
 
@@ -68,11 +89,36 @@ public class AdminUsersDisplay extends AppCompatActivity
         } catch (MqttException e) {
             e.printStackTrace();
         }
+
     }
-    public void m_subscribe()
+
+    private void loadListView()
     {
-        String topic =topicStr;
-        int qos = 2;
+       // if(isActive) { refresh(5000);}
+
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1,adddataInputsListText);
+        connected_users_list.setAdapter(arrayAdapter);
+        connected_users_list.deferNotifyDataSetChanged();
+
+    }
+  /* private void refresh(int milliseconds) {
+        final Handler handler=new Handler();
+        final Runnable runnable=new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                UserInputsList.clear();
+                m_subscribe_add();
+            }
+        };
+
+    }*/
+
+    public void m_subscribe_add()
+    {
+        String topic ="adduser/+";
+        int qos = 1;
         try {
             IMqttToken subToken = client.subscribe(topic, qos);
             subToken.setActionCallback(new IMqttActionListener()
@@ -91,10 +137,13 @@ public class AdminUsersDisplay extends AppCompatActivity
 
                 }
             });
-        } catch (MqttException e) {
+        } catch (MqttException e)
+        {
             e.printStackTrace();
         }
-        client.setCallback(new MqttCallback() {
+
+        client.setCallback(new MqttCallback()
+        {
             @Override
             public void connectionLost(Throwable cause) {
 
@@ -104,9 +153,7 @@ public class AdminUsersDisplay extends AppCompatActivity
             public void messageArrived(String topic, MqttMessage message)
             {
                 UserInputsList.add(new String (message.getPayload()));
-                loadListView();
-                //vibrator.vibrate(500);
-                //ringtone.play();
+                addloadListView();
             }
 
             @Override
@@ -114,25 +161,27 @@ public class AdminUsersDisplay extends AppCompatActivity
 
             }
         });
+
+
+
     }
-    public void loadListView()
+
+    public void addloadListView()
     {
 
-        ArrayList<String> dataInputsListText = new ArrayList<>();
-
-       for (int i = 1; i < UserInputsList.size(); i++)
+       adddataInputsListText = new ArrayList<>();
+       for (int i = 0; i < UserInputsList.size(); i++)
        {
            String temp = "";
 
                temp += UserInputsList.get(i);
-               dataInputsListText.add(temp);
+              adddataInputsListText.add(temp);
 
        }
-
-        ArrayAdapter arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dataInputsListText);
-        connected_users_list.setAdapter(arrayAdapter);
+        loadListView();
 
 
 
     }
+
 }

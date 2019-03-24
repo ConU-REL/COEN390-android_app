@@ -42,6 +42,8 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
     protected ImageView closeReconnect;
     protected Dialog reconnect;
     protected Button reconnect_button;
+    String connected="1";
+    String disconnected="0";
 
     private TextView sub_topic;
     String topicStr="DataDisplay";
@@ -86,7 +88,6 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
             super.onBackPressed();
         }
     }
-
 
 
     @Override
@@ -145,6 +146,7 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
                     connection_progressBar.setVisibility(View.GONE);
                     Toast.makeText(AdminDataDisplay.this,"Connected",Toast.LENGTH_SHORT).show();
                     m_subscribe();
+                    ecu_connection_subscribe();
 
                 }
 
@@ -161,7 +163,74 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
             e.printStackTrace();
         }
     }
-  //opens a popup page where the user can connect to the server again
+
+    private void ecu_connection_subscribe()
+    {
+        String topic ="status/module";
+        int qos = 1;
+        try {
+            IMqttToken subToken = client.subscribe(topic, qos);
+            subToken.setActionCallback(new IMqttActionListener()
+            {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken)
+                {
+                    // The message was published
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken,
+                                      Throwable exception) {
+                    // The subscription could not be performed, maybe the user was not
+                    // authorized to subscribe on the specified topic e.g. using wildcards
+
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+        client.setCallback(new MqttCallback() {
+            @Override
+            public void connectionLost(Throwable cause) {
+
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage message)
+            {
+                String status=new String (message.getPayload());
+                String connection_value=status.substring(12,13);
+
+                if(connection_value.equals(disconnected))
+                {
+                    Toast.makeText(AdminDataDisplay.this,"Lost Connection to ECU !!!",Toast.LENGTH_SHORT).show();
+
+               }
+
+                else if(connection_value.equals(connected))
+                {
+                    Toast.makeText(AdminDataDisplay.this,"Connected to ECU !!!",Toast.LENGTH_SHORT).show();
+
+                }
+                else if (!connection_value.equals(connected) && !connection_value.equals(disconnected))
+                {
+                    Toast.makeText(AdminDataDisplay.this, "No Connection to ECU !!!", Toast.LENGTH_SHORT).show();
+
+                }
+
+                //vibrator.vibrate(500);
+                //ringtone.play();
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+
+            }
+        });
+
+    }
+
+    //opens a popup page where the user can connect to the server again
     private void Show_reconnect_popup()
     {
         reconnect.setContentView(R.layout.popup_failed_connection);

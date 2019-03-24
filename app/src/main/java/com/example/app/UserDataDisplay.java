@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -30,10 +31,12 @@ import java.util.List;
 import java.util.Random;
 
 public class UserDataDisplay extends AppCompatActivity {
-   protected TextView user_name;
+
+    protected TextView user_name;
    String username;
    String id;
-   protected ListView user_data_display;
+
+    protected ListView user_data_display;
     protected ImageView closeReconnect;
     protected Dialog reconnect;
     protected Button reconnect_button;
@@ -65,6 +68,7 @@ public class UserDataDisplay extends AppCompatActivity {
         id=getIntent().getExtras().getString("ID");
         username=getIntent().getExtras().getString("Value");
         user_name.setText(username);
+
         Show_access_popup();
         m_connect();
         loadListView();
@@ -73,16 +77,18 @@ public class UserDataDisplay extends AppCompatActivity {
     private void Show_access_popup()
     {
         access.setContentView(R.layout.access_permision);
+
         access_button=access.findViewById(R.id.access_button);
+
         access_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                m_publish();
+                m_publish_add();
                 access.dismiss();
+
             }
         });
-        access.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         access.show();
 
     }
@@ -192,16 +198,25 @@ public class UserDataDisplay extends AppCompatActivity {
             }
         });
     }
-    public void m_publish()
+    public void m_publish_add()
     {
 
-        String topic ="ConnectedUsers/"+id+"/online";
-        int qos=0;
-        //byte[] encodedPayload = new byte[0];
+        String topic ="adduser/"+username;
+        int qos=1;
         try {
-            //encodedPayload = message.getBytes("UTF-8");
-            //MqttMessage message = new MqttMessage(encodedPayload);
-            client.publish(topic, username.getBytes(),qos,false);
+            client.publish(topic, username.getBytes(),qos,true);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void m_disconnect()
+    {
+        String topic ="adduser/"+username;
+        int qos=1;
+        try {
+            client.publish(topic, new byte[]{}, 0, true);
         } catch (MqttException e) {
             e.printStackTrace();
         }
@@ -209,8 +224,11 @@ public class UserDataDisplay extends AppCompatActivity {
     public void goUserStart(View view)
     {
         Intent intent=new Intent(this,MainActivity.class);
+        m_disconnect();
         startActivity(intent);
+
     }
+
     public void loadListView()
     {
         List<DataInputs> dataInputsList=new ArrayList<>();
@@ -233,7 +251,6 @@ public class UserDataDisplay extends AppCompatActivity {
 
         ArrayAdapter arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dataInputsListText);
         user_data_display.setAdapter(arrayAdapter);
-
 
 
     }
