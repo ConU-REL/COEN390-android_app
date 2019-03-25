@@ -46,10 +46,10 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
     String disconnected="0";
 
     private TextView sub_topic;
-    String topicStr="DataDisplay";
+    String topicStr="sensors/critical";
     MqttAndroidClient client;
     private ProgressBar connection_progressBar;
-    String MQTTHOST="tcp://broker.hivemq.com:1883";
+    String MQTTHOST="tcp://10.0.22.10:1883";
 
     protected ListView admin_data_display_list;
     @Override
@@ -131,7 +131,7 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
         connection_progressBar.setVisibility(View.VISIBLE);
 
         String clientId = MqttClient.generateClientId();
-         client = new MqttAndroidClient(this.getApplicationContext(), MQTTHOST,
+         client = new MqttAndroidClient(this.getApplicationContext(),"tcp://10.0.22.10:1883",
                         clientId);
 
         try {
@@ -145,8 +145,10 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
                     Log.d("In MQTT_Connection", "onSuccess");
                     connection_progressBar.setVisibility(View.GONE);
                     Toast.makeText(AdminDataDisplay.this,"Connected",Toast.LENGTH_SHORT).show();
+
+
                     m_subscribe();
-                    ecu_connection_subscribe();
+                    //ecu_connection_subscribe();
 
                 }
 
@@ -259,14 +261,17 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
     public void m_subscribe()
     {
         String topic =topicStr;
-        int qos = 1;
+        int qos = 0;
         try {
             IMqttToken subToken = client.subscribe(topic, qos);
             subToken.setActionCallback(new IMqttActionListener()
             {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken)
+
                 {
+                    Toast.makeText(AdminDataDisplay.this,"Subscribed to "+topicStr,Toast.LENGTH_SHORT).show();
+
                     // The message was published
                 }
 

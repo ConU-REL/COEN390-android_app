@@ -45,11 +45,11 @@ public class UserDataDisplay extends AppCompatActivity {
     protected Button access_button;
 
     private TextView subu_topic;
-    String topicStr="DataDisplay";
+    String topicStr="sensors/critical";
     double user_id=Math.random();
     MqttAndroidClient client;
     private ProgressBar user_progressBar;
-    String MQTTHOST="tcp://broker.hivemq.com:1883";
+    String MQTTHOST="tcp://10.0.22.10:1883";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -98,7 +98,7 @@ public class UserDataDisplay extends AppCompatActivity {
         user_progressBar.setVisibility(View.VISIBLE);
 
         String clientId = MqttClient.generateClientId();
-        client = new MqttAndroidClient(this.getApplicationContext(), MQTTHOST,
+        client = new MqttAndroidClient(this.getApplicationContext(), "tcp://10.0.22.10:1883",
                 clientId);
 
         try {
@@ -156,7 +156,7 @@ public class UserDataDisplay extends AppCompatActivity {
     public void m_subscribe()
     {
         String topic =topicStr;
-        int qos = 1;
+        int qos = 0;
         try {
             IMqttToken subToken = client.subscribe(topic, qos);
             subToken.setActionCallback(new IMqttActionListener()
