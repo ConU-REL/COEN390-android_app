@@ -29,7 +29,7 @@ public class AdminUsersDisplay extends AppCompatActivity
     protected ListView connected_users_list;
     protected ListView disconnected_users_list;
 
-    String MQTTHOST="tcp://broker.hivemq.com:1883";
+    String MQTTHOST="tcp://10.0.22.10:1883";
     List<String> UserInputsList;
     protected Button refress_button;
     MqttAndroidClient client;
@@ -60,7 +60,7 @@ public class AdminUsersDisplay extends AppCompatActivity
     {
 
         String clientId = MqttClient.generateClientId();
-        client = new MqttAndroidClient(this.getApplicationContext(), MQTTHOST,
+        client = new MqttAndroidClient(this.getApplicationContext(), "tcp://10.0.22.10:1883",
                 clientId);
         UserInputsList=new ArrayList<>();
 
