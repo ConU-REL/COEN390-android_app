@@ -260,7 +260,7 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
     //subscribe to a topic in server
     public void m_subscribe()
     {
-        String topic =topicStr;
+        String topic = "sensors/critical";
         int qos = 0;
         try {
             IMqttToken subToken = client.subscribe(topic, qos);
