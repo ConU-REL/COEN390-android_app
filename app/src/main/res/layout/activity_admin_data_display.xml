@@ -17,7 +17,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBaseline_toBaselineOf="@+id/label_ctemp"
-            app:layout_constraintEnd_toEndOf="@+id/data_temp_o"
             app:layout_constraintStart_toStartOf="@+id/data_temp_o"
             tools:text="Coolant Temp" />
 
@@ -54,31 +53,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/data_display"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginTop="60dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginRight="32dp"
-            android:text="@string/data_display"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
             android:id="@+id/data_rpm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="52dp"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="@+id/data_display"
-            app:layout_constraintHorizontal_bias="0.49"
-            app:layout_constraintStart_toStartOf="@+id/data_display"
-            app:layout_constraintTop_toBottomOf="@+id/data_display"
+            android:textSize="36sp"
+            app:layout_constraintEnd_toEndOf="@+id/textView11"
+            app:layout_constraintStart_toStartOf="@+id/textView11"
+            app:layout_constraintTop_toBottomOf="@+id/textView11"
             tools:text="RPM" />
 
         <TextView
@@ -88,7 +69,7 @@
             android:layout_marginTop="48dp"
             android:text="Oil Temp: "
             app:layout_constraintEnd_toStartOf="@+id/data_temp_o"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.51"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/data_rpm" />
 
@@ -98,7 +79,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Coolant Temp"
-            app:layout_constraintEnd_toEndOf="@+id/label_otemp"
             app:layout_constraintStart_toStartOf="@+id/label_otemp"
             app:layout_constraintTop_toBottomOf="@+id/label_otemp" />
 
@@ -108,7 +88,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Fuel Pressure"
-            app:layout_constraintEnd_toEndOf="@+id/label_ctemp"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="@+id/label_ctemp"
             app:layout_constraintTop_toBottomOf="@+id/label_ctemp" />
@@ -118,9 +97,58 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBaseline_toBaselineOf="@+id/label_fpress"
-            app:layout_constraintEnd_toEndOf="@+id/data_temp_c"
             app:layout_constraintStart_toStartOf="@+id/data_temp_c"
             tools:text="Fuel Pressure" />
+
+        <TextView
+            android:id="@+id/label_ecu_stat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="ECU:"
+            app:layout_constraintStart_toStartOf="@+id/admin_name"
+            app:layout_constraintTop_toBottomOf="@+id/label_server_stat" />
+
+        <TextView
+            android:id="@+id/ecu_stat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBaseline_toBaselineOf="@+id/label_ecu_stat"
+            app:layout_constraintStart_toStartOf="@+id/server_stat"
+            tools:text="Connected" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:text="RPM:"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ecu_stat" />
+
+        <TextView
+            android:id="@+id/label_server_stat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Server:"
+            app:layout_constraintStart_toStartOf="@+id/admin_name"
+            app:layout_constraintTop_toBottomOf="@+id/admin_name" />
+
+        <TextView
+            android:id="@+id/server_stat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/label_server_stat"
+            app:layout_constraintStart_toEndOf="@+id/label_server_stat"
+            tools:text="Connected" />
 
     </android.support.constraint.ConstraintLayout>
 

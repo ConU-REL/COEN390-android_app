@@ -17,7 +17,7 @@ public class SharedPreferencesHelper
     {
         SharedPreferences.Editor editor=sharedPreferences.edit();
         editor.putString("User Name",name);
-        //Consider using `apply()` instead; `commit` writes its data to persistent storage immediately, whereas `apply` will handle it in the background
+        //Consider using `apply()` instead; `commit` writes its fields to persistent storage immediately, whereas `apply` will handle it in the background
         editor.commit();
     }
 

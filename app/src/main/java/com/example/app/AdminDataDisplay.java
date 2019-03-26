@@ -33,6 +33,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static java.sql.Types.NULL;
+
 
 public class AdminDataDisplay extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -40,15 +42,21 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
     protected ImageView closeReconnect;
     protected Dialog reconnect;
     protected Button reconnect_button;
-    String connected="1";
-    String disconnected="0";
 
-    String topicStr="sensors/critical";
     MqttAndroidClient client;
     private ProgressBar connection_progressBar;
     String MQTTHOST="tcp://10.0.22.10:1883";
+    Thread mqttThread;
+    IMqttToken connection;
 
-    ArrayList<TextView> data = new ArrayList<>();
+    ArrayList<Integer> data = new ArrayList<>();
+
+    // UI elements
+    ArrayList<TextView> fields = new ArrayList<>();
+    TextView ecu_status;
+    TextView server_status;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -69,12 +77,25 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        data.add((TextView) findViewById(R.id.data_rpm));
-        data.add((TextView) findViewById(R.id.data_temp_c));
-        data.add((TextView) findViewById(R.id.data_temp_o));
-        data.add((TextView) findViewById(R.id.data_press_f));
+        ecu_status = findViewById(R.id.ecu_stat);
+        ecu_status.setText("Disconnected");
+        ecu_status.setTextColor(Color.RED);
 
-        data.get(0).setText("0");
+        server_status = findViewById(R.id.server_stat);
+        server_status.setText("Disconnected");
+        server_status.setTextColor(Color.RED);
+
+
+        fields.add((TextView) findViewById(R.id.data_rpm));
+        fields.add((TextView) findViewById(R.id.data_temp_c));
+        fields.add((TextView) findViewById(R.id.data_temp_o));
+        fields.add((TextView) findViewById(R.id.data_press_f));
+
+        for(int i=0; i<fields.size(); i++){
+            fields.get(i).setText("0");
+        }
+
+
 
         m_connect();
     }
@@ -126,7 +147,8 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
         return true;
     }
 
-  //Connect to the server
+
+    //Connect to the server
     private void m_connect()
     {
         connection_progressBar.setVisibility(View.VISIBLE);
@@ -135,31 +157,65 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
          client = new MqttAndroidClient(this.getApplicationContext(),"tcp://10.0.22.10:1883",
                         clientId);
 
+        mqttThread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                if (client != null && !client.isConnected()) {
+                    try {
+                        connection = client.connect();
+                        connection.setActionCallback(new IMqttActionListener()
+                        {
+                            @Override
+                            public void onSuccess(IMqttToken asyncActionToken)
+                            {
+                                // We are connected
+                                Log.d("In MQTT_Connection", "onSuccess");
+                                connection_progressBar.setVisibility(View.GONE);
+                                Toast.makeText(AdminDataDisplay.this,"Connected to server",Toast.LENGTH_SHORT).show();
+
+                                server_status = findViewById(R.id.server_stat);
+                                server_status.setText("Connected");
+                                server_status.setTextColor(Color.GREEN);
+
+                                m_subscribe();
+                            }
+
+                            @Override
+                            public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                                // Something went wrong e.g. connection timeout or firewall problems
+                                Log.d("In MQTT_Connection", "onFailure");
+                                connection_progressBar.setVisibility(View.GONE);
+                                Show_reconnect_popup();
+
+                            }
+                        });
+                    } catch (MqttException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        mqttThread.start();
+    }
+
+    // this method subscribes to the topic passed in the parameter
+    private void subscription_handler(final String topic){
         try {
-            IMqttToken token = client.connect();
-            token.setActionCallback(new IMqttActionListener()
+            IMqttToken subToken = client.subscribe(topic, 0);
+            subToken.setActionCallback(new IMqttActionListener()
             {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken)
                 {
-                    // We are connected
-                    Log.d("In MQTT_Connection", "onSuccess");
-                    connection_progressBar.setVisibility(View.GONE);
-                    Toast.makeText(AdminDataDisplay.this,"Connected",Toast.LENGTH_SHORT).show();
-
-
-                    m_subscribe();
-                    //ecu_connection_subscribe();
-
+                    Toast.makeText(AdminDataDisplay.this,"Subscribed to "+topic,Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
-                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    // Something went wrong e.g. connection timeout or firewall problems
-                    Log.d("In MQTT_Connection", "onFailure");
-                    connection_progressBar.setVisibility(View.GONE);
-                    Show_reconnect_popup();
-
+                public void onFailure(IMqttToken asyncActionToken,
+                                      Throwable exception) {
+                    Toast.makeText(AdminDataDisplay.this,"Subscription to "+topic+" failed",Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (MqttException e) {
@@ -167,70 +223,87 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
         }
     }
 
-    private void ecu_connection_subscribe()
-    {
-        String topic ="status/module";
-        int qos = 1;
-        try {
-            IMqttToken subToken = client.subscribe(topic, qos);
-            subToken.setActionCallback(new IMqttActionListener()
-            {
-                @Override
-                public void onSuccess(IMqttToken asyncActionToken)
-                {
-                    // The message was published
-                }
 
-                @Override
-                public void onFailure(IMqttToken asyncActionToken,
-                                      Throwable exception) {
-                    // The subscription could not be performed, maybe the user was not
-                    // authorized to subscribe on the specified topic e.g. using wildcards
+    private void m_subscribe(){
+        subscription_handler("status/module");
+        subscription_handler("sensors/critical");
+        subscription_handler("sensors/non_critical");
 
-                }
-            });
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
         client.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {
-
+                Toast.makeText(AdminDataDisplay.this,"Lost Connection to MQTT broker",Toast.LENGTH_SHORT).show();
+                server_status = findViewById(R.id.server_stat);
+                server_status.setText("Disconnected");
+                server_status.setTextColor(Color.RED);
             }
 
             @Override
-            public void messageArrived(String topic, MqttMessage message)
-            {
-                String status=new String (message.getPayload());
-                String connection_value=status.substring(12,13);
+            public void messageArrived(String topic, MqttMessage message) throws JSONException {
+                final JSONObject msg = new JSONObject(new String (message.getPayload()));
 
-                if(connection_value.equals(disconnected))
-                {
-                    Toast.makeText(AdminDataDisplay.this,"Lost Connection to ECU !!!",Toast.LENGTH_SHORT).show();
+                switch (topic) {
+                    case "sensors/critical":
+                        runOnUiThread(new Runnable() {
+                   @Override
+                            public void run() {
+                                try {
+                                    data.clear();
+                                    data.add(msg.getInt("rpm"));
+                                    data.add(msg.getInt("oil_temp"));
+                                    data.add(msg.getInt("coolant_temp"));
+                                    data.add(msg.getInt("fuel_pressure"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
 
-               }
+                                for(int i=0; i<fields.size(); i++){
+                                    fields.get(i).setText(data.get(i).toString());
 
-                else if(connection_value.equals(connected))
-                {
-                    Toast.makeText(AdminDataDisplay.this,"Connected to ECU !!!",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
 
+                        break;
+                    case "sensors/non-critical":
+
+                        break;
+                    case "status/module":
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                boolean conn_status = false;
+                                try {
+                                    conn_status = Integer.parseInt(msg.getString("ecu_conn")) == 1;
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                                if(!conn_status)
+                                {
+                                    Toast.makeText(AdminDataDisplay.this,"Module Lost Connection to ECU",Toast.LENGTH_SHORT).show();
+                                    ecu_status.setText("Disconnected");
+                                    ecu_status.setTextColor(Color.RED);
+
+                                } else {
+                                    Toast.makeText(AdminDataDisplay.this,"Module Connected to ECU",Toast.LENGTH_SHORT).show();
+                                    ecu_status.setText("Connected");
+                                    ecu_status.setTextColor(Color.GREEN);
+                                }
+                            }
+                        });
+
+                        break;
+                    default:
+
+                        break;
                 }
-                else if (!connection_value.equals(connected) && !connection_value.equals(disconnected))
-                {
-                    Toast.makeText(AdminDataDisplay.this, "No Connection to ECU !!!", Toast.LENGTH_SHORT).show();
-
-                }
-
-                //vibrator.vibrate(500);
-                //ringtone.play();
             }
-
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {
 
             }
         });
-
     }
 
     //opens a popup page where the user can connect to the server again
@@ -256,56 +329,5 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
         reconnect.show();
 
 
-    }
-
-    //subscribe to a topic in server
-    public void m_subscribe()
-    {
-        String topic = "sensors/critical";
-        int qos = 0;
-        try {
-            IMqttToken subToken = client.subscribe(topic, qos);
-            subToken.setActionCallback(new IMqttActionListener()
-            {
-                @Override
-                public void onSuccess(IMqttToken asyncActionToken)
-
-                {
-                    Toast.makeText(AdminDataDisplay.this,"Subscribed to "+topicStr,Toast.LENGTH_SHORT).show();
-
-                }
-
-                @Override
-                public void onFailure(IMqttToken asyncActionToken,
-                                      Throwable exception) {
-                    // The subscription could not be performed, maybe the user was not
-                    // authorized to subscribe on the specified topic e.g. using wildcards
-
-                }
-            });
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-        client.setCallback(new MqttCallback() {
-            @Override
-            public void connectionLost(Throwable cause) {
-
-            }
-
-            @Override
-            public void messageArrived(String topic, MqttMessage message) throws JSONException {
-                JSONObject msg = new JSONObject(new String (message.getPayload()));
-
-                data.get(0).setText(msg.getString("rpm"));
-                data.get(1).setText(msg.getString("oil_temp"));
-                data.get(2).setText(msg.getString("coolant_temp"));
-                data.get(3).setText(msg.getString("fuel_pressure"));
-            }
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken token) {
-
-            }
-        });
     }
 }
