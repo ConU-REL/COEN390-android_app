@@ -33,9 +33,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static java.sql.Types.NULL;
-
-
 public class AdminDataDisplay extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
@@ -62,7 +59,7 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_data_display);
+        setContentView(R.layout.activity_data_display);
 
         reconnect=new Dialog(this);
 
