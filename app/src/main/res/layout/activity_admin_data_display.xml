@@ -12,6 +12,25 @@
         android:layout_height="match_parent"
         android:visibility="visible">
 
+        <TextView
+            android:id="@+id/data_temp_c"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBaseline_toBaselineOf="@+id/label_ctemp"
+            app:layout_constraintEnd_toEndOf="@+id/data_temp_o"
+            app:layout_constraintStart_toStartOf="@+id/data_temp_o"
+            tools:text="Coolant Temp" />
+
+        <TextView
+            android:id="@+id/data_temp_o"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBaseline_toBaselineOf="@+id/label_otemp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/label_otemp"
+            tools:text="Oil Temp" />
+
         <ProgressBar
             android:id="@+id/connection_progressBar"
             style="?android:attr/progressBarStyle"
@@ -22,20 +41,6 @@
             android:layout_marginRight="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/sub_topic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginRight="32dp"
-            android:text="@string/data_display"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/admin_data_display_list" />
 
         <TextView
             android:id="@+id/admin_name"
@@ -64,18 +69,58 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ListView
-            android:id="@+id/admin_data_display_list"
-            android:layout_width="0dp"
-            android:layout_height="167dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginRight="32dp"
-            app:layout_constraintEnd_toEndOf="parent"
+        <TextView
+            android:id="@+id/data_rpm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="52dp"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="@+id/data_display"
+            app:layout_constraintHorizontal_bias="0.49"
+            app:layout_constraintStart_toStartOf="@+id/data_display"
+            app:layout_constraintTop_toBottomOf="@+id/data_display"
+            tools:text="RPM" />
+
+        <TextView
+            android:id="@+id/label_otemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:text="Oil Temp: "
+            app:layout_constraintEnd_toStartOf="@+id/data_temp_o"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/data_display" />
+            app:layout_constraintTop_toBottomOf="@+id/data_rpm" />
+
+        <TextView
+            android:id="@+id/label_ctemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Coolant Temp"
+            app:layout_constraintEnd_toEndOf="@+id/label_otemp"
+            app:layout_constraintStart_toStartOf="@+id/label_otemp"
+            app:layout_constraintTop_toBottomOf="@+id/label_otemp" />
+
+        <TextView
+            android:id="@+id/label_fpress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Fuel Pressure"
+            app:layout_constraintEnd_toEndOf="@+id/label_ctemp"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="@+id/label_ctemp"
+            app:layout_constraintTop_toBottomOf="@+id/label_ctemp" />
+
+        <TextView
+            android:id="@+id/data_press_f"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBaseline_toBaselineOf="@+id/label_fpress"
+            app:layout_constraintEnd_toEndOf="@+id/data_temp_c"
+            app:layout_constraintStart_toStartOf="@+id/data_temp_c"
+            tools:text="Fuel Pressure" />
 
     </android.support.constraint.ConstraintLayout>
 

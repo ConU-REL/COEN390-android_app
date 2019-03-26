@@ -12,13 +12,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,10 +28,11 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+
 
 public class AdminDataDisplay extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -45,13 +43,13 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
     String connected="1";
     String disconnected="0";
 
-    private TextView sub_topic;
     String topicStr="sensors/critical";
     MqttAndroidClient client;
     private ProgressBar connection_progressBar;
     String MQTTHOST="tcp://10.0.22.10:1883";
 
-    protected ListView admin_data_display_list;
+    ArrayList<TextView> data = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -60,8 +58,6 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
 
         reconnect=new Dialog(this);
 
-        sub_topic=findViewById(R.id.sub_topic);
-        admin_data_display_list=findViewById(R.id.admin_data_display_list);
         connection_progressBar=findViewById(R.id.connection_progressBar);
 
         //The following lines are for the navigation menu
@@ -73,9 +69,14 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        data.add((TextView) findViewById(R.id.data_rpm));
+        data.add((TextView) findViewById(R.id.data_temp_c));
+        data.add((TextView) findViewById(R.id.data_temp_o));
+        data.add((TextView) findViewById(R.id.data_press_f));
+
+        data.get(0).setText("0");
 
         m_connect();
-        loadListView();
     }
 
     @Override
@@ -272,7 +273,6 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
                 {
                     Toast.makeText(AdminDataDisplay.this,"Subscribed to "+topicStr,Toast.LENGTH_SHORT).show();
 
-                    // The message was published
                 }
 
                 @Override
@@ -293,11 +293,13 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
             }
 
             @Override
-            public void messageArrived(String topic, MqttMessage message)
-            {
-                sub_topic.setText(new String(message.getPayload()));
-                //vibrator.vibrate(500);
-                //ringtone.play();
+            public void messageArrived(String topic, MqttMessage message) throws JSONException {
+                JSONObject msg = new JSONObject(new String (message.getPayload()));
+
+                data.get(0).setText(msg.getString("rpm"));
+                data.get(1).setText(msg.getString("oil_temp"));
+                data.get(2).setText(msg.getString("coolant_temp"));
+                data.get(3).setText(msg.getString("fuel_pressure"));
             }
 
             @Override
@@ -306,34 +308,4 @@ public class AdminDataDisplay extends AppCompatActivity implements NavigationVie
             }
         });
     }
-
-    public void loadListView()
-    {
-
-        List<DataInputs> dataInputsList=new ArrayList<>();
-        dataInputsList.add(new DataInputs(8,8,8,8,8,8));//used as a test for the demo. Not final version
-
-        ArrayList<String> dataInputsListText = new ArrayList<>();
-
-        for (int i = 0; i < dataInputsList.size(); i++) {
-            String temp = "";
-            temp += "Oil Temperature: "+dataInputsList.get(i).getOilTemperature() + "\n";
-            temp += "Oil Pressure: "+dataInputsList.get(i).getOilPressure() + "\n";
-            temp += "Fuel Pressure: "+dataInputsList.get(i).getFuelPressure() + "\n";
-            temp += "Coolant Temperature: "+dataInputsList.get(i).getCoolantTemperature() + "\n";
-            temp += "Engine RPM: "+dataInputsList.get(i).getEngineRPM() + "\n";
-            temp += "Gear: "+dataInputsList.get(i).getGear();
-
-            dataInputsListText.add(temp);
-
-        }
-
-        ArrayAdapter arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dataInputsListText);
-        admin_data_display_list.setAdapter(arrayAdapter);
-
-
-    }
-
-
-
 }
