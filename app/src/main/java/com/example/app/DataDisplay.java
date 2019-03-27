@@ -60,6 +60,10 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
     TextView ecu_status;
     TextView server_status;
     Button action_reconnect;
+    String MQTTtestHost="tcp://broker.hivemq.com:1883";
+    String MQTTHOST="tcp://10.0.22.10:1883";
+
+    private Button logout_button;
 
 
 
@@ -72,8 +76,24 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
 
         Intent intent = getIntent();
         is_admin = intent.getBooleanExtra("admin", false);
-        username = intent.getStringExtra("username");
+        final Intent intent2=new Intent(this,UserLogin.class);
 
+        username = intent.getStringExtra("username");
+        logout_button=findViewById(R.id.logout_button);
+        if(!is_admin)
+        {
+           logout_button.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   m_disconnect();
+                   startActivity(intent2);
+
+               }
+           });
+        }
+        else
+        {   logout_button.setVisibility(View.GONE);
+        }
         TextView label_username = findViewById(R.id.label_username);
         label_username.setText(username);
 
@@ -121,7 +141,15 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
 
         m_connect(findViewById(android.R.id.content));
     }
-
+    private void m_disconnect()
+    {
+        String topic ="adduser/"+username;
+        try {
+            client.publish(topic, new byte[]{}, 0, true);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void onBackPressed()
     {
@@ -182,7 +210,7 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
         }
 
         String clientId = MqttClient.generateClientId();
-         client = new MqttAndroidClient(this.getApplicationContext(),"tcp://10.0.22.10:1883",
+         client = new MqttAndroidClient(this.getApplicationContext(),MQTTHOST,
                         clientId);
 
         mqttThread = new Thread(new Runnable() {
