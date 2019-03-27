@@ -32,28 +32,23 @@ public class AdminLogin extends AppCompatActivity {
         String passwordInput = adminPassword.getText().toString();
         String adminName=admin.getAdministratorName();
         String adminPassword=admin.getPassword();
-        Log.d("Test","The Name is "+ nameInput);
-        Log.d("test", "The Password is " + passwordInput);
 
         if(adminName.equals(nameInput))
         {
             System.out.println("Admin name = " + admin.getAdministratorName());
             if (adminPassword.equals(passwordInput))
             {
-                Log.d("Result", "Reached here");
-                System.out.println("Admin Password = " + admin.getPassword());
                 Intent intent=new Intent(this,AdminAccess.class);
+                intent.putExtra("username",admin.getAdministratorName());
                 startActivity(intent);
             }
             else
             {
-                Log.d("In Class", "PW: "+ admin.getPassword());
                 Toast.makeText(AdminLogin.this, "Wrong password!", Toast.LENGTH_SHORT).show();
             }
         }
         else
         {
-            Log.d("In CLass", "Name : " + admin.getAdministratorName());
             Toast.makeText(AdminLogin.this, "Invalid user!", Toast.LENGTH_SHORT).show();
         }
 

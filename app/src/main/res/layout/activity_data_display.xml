@@ -5,7 +5,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AdminDataDisplay">
+    tools:context=".DataDisplay">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -42,15 +42,15 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/admin_name"
+            android:id="@+id/label_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginLeft="32dp"
             android:layout_marginTop="32dp"
-            android:text="@string/admin_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Username" />
 
         <TextView
             android:id="@+id/data_rpm"
@@ -78,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Coolant Temp"
+            android:text="Coolant Temp:"
             app:layout_constraintStart_toStartOf="@+id/label_otemp"
             app:layout_constraintTop_toBottomOf="@+id/label_otemp" />
 
@@ -87,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Fuel Pressure"
+            android:text="Fuel Pressure:"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="@+id/label_ctemp"
             app:layout_constraintTop_toBottomOf="@+id/label_ctemp" />
@@ -106,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="ECU:"
-            app:layout_constraintStart_toStartOf="@+id/admin_name"
+            app:layout_constraintStart_toStartOf="@+id/label_username"
             app:layout_constraintTop_toBottomOf="@+id/label_server_stat" />
 
         <TextView
@@ -137,8 +137,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="Server:"
-            app:layout_constraintStart_toStartOf="@+id/admin_name"
-            app:layout_constraintTop_toBottomOf="@+id/admin_name" />
+            app:layout_constraintStart_toStartOf="@+id/label_username"
+            app:layout_constraintTop_toBottomOf="@+id/label_username" />
 
         <TextView
             android:id="@+id/server_stat"
@@ -149,6 +149,114 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/label_server_stat"
             app:layout_constraintStart_toEndOf="@+id/label_server_stat"
             tools:text="Connected" />
+
+        <Button
+            android:id="@+id/action_reconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:onClick="m_connect"
+            android:text="Reconnect"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/ecu_stat"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/server_stat"
+            app:layout_constraintTop_toTopOf="@+id/server_stat" />
+
+        <ToggleButton
+            android:id="@+id/toggleButton"
+            android:layout_width="208dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:onClick="btn_data"
+            android:textOff="Show Non-Critical Data"
+            android:textOn="Hide Non-Critical Data"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Show Non-Critical Data" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="248dp"
+            android:layout_height="2dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="?android:attr/listDivider"
+            android:foreground="@color/colorPrimary"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/label_voltage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_fpress" />
+
+        <TextView
+            android:id="@+id/label_voltage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Voltage:"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="@+id/label_fpress"
+            app:layout_constraintTop_toBottomOf="@+id/label_fpress" />
+
+        <TextView
+            android:id="@+id/data_voltage"
+            android:layout_width="wrap_content"
+            android:layout_height="15dp"
+            android:visibility="invisible"
+            app:layout_constraintBaseline_toBaselineOf="@+id/label_voltage"
+            app:layout_constraintStart_toStartOf="@+id/data_press_f"
+            tools:text="Voltage" />
+
+        <TextView
+            android:id="@+id/label_gear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Gear:"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="@+id/label_voltage"
+            app:layout_constraintTop_toBottomOf="@+id/label_voltage" />
+
+        <TextView
+            android:id="@+id/label_launch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Launch Status:"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="@+id/label_gear"
+            app:layout_constraintTop_toBottomOf="@+id/label_gear" />
+
+        <TextView
+            android:id="@+id/data_gear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintBaseline_toBaselineOf="@+id/label_gear"
+            app:layout_constraintStart_toStartOf="@+id/data_voltage"
+            tools:text="Gear" />
+
+        <TextView
+            android:id="@+id/data_launch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Launch"
+            android:visibility="invisible"
+            app:layout_constraintBaseline_toBaselineOf="@+id/label_launch"
+            app:layout_constraintStart_toStartOf="@+id/data_gear" />
 
     </android.support.constraint.ConstraintLayout>
 

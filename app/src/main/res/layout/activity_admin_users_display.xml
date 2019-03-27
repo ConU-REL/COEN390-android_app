@@ -7,7 +7,7 @@
     tools:context=".AdminUsersDisplay">
 
     <TextView
-        android:id="@+id/admin_name"
+        android:id="@+id/label_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
