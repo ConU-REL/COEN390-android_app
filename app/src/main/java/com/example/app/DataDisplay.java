@@ -60,7 +60,7 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
     TextView ecu_status;
     TextView server_status;
     Button action_reconnect;
-    String MQTTtestHost="tcp://broker.hivemq.com:1883";
+    String MQTTtestHOST="tcp://broker.hivemq.com:1883";
     String MQTTHOST="tcp://10.0.22.10:1883";
 
     private Button logout_button;
@@ -234,6 +234,10 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
                                 server_status.setText("Connected");
                                 server_status.setTextColor(Color.GREEN);
                                 action_reconnect.setVisibility(View.GONE);
+                                if(!is_admin)
+                                {
+                                    m_publish_add();
+                                }
 
                                 m_subscribe();
                             }
@@ -256,6 +260,18 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
 
         mqttThread.start();
     }
+    public void m_publish_add()
+    {
+
+        String topic ="adduser/"+username;
+        int qos=1;
+        try {
+            client.publish(topic, username.getBytes(),qos,true);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // this method subscribes to the topic passed in the parameter
     private void subscription_handler(final String topic){

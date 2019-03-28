@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -26,7 +28,7 @@ import java.util.Set;
 
 public class AdminUsersDisplay extends AppCompatActivity
 {
-    protected ListView connected_users_list;
+    protected RecyclerView connected_users_list;
     protected ListView disconnected_users_list;
 
     String MQTTtestHOST="tcp://broker.hivemq.com:1883";
@@ -99,9 +101,11 @@ public class AdminUsersDisplay extends AppCompatActivity
     {
        // if(isActive) { refresh(5000);}
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1,adddataInputsListText);
-        connected_users_list.setAdapter(arrayAdapter);
-        connected_users_list.deferNotifyDataSetChanged();
+        RecyclerViewAdapter adapter=new RecyclerViewAdapter(adddataInputsListText,this);
+        connected_users_list.setAdapter(adapter);
+        connected_users_list.setLayoutManager(new LinearLayoutManager(this));
+
+
 
     }
   /* private void refresh(int milliseconds) {
@@ -182,8 +186,6 @@ public class AdminUsersDisplay extends AppCompatActivity
 
        }
         loadListView();
-
-
 
     }
 
