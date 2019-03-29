@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -62,9 +63,9 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
     Button action_reconnect;
     String MQTTtestHOST="tcp://broker.hivemq.com:1883";
     String MQTTHOST="tcp://10.0.22.10:1883";
-
+    protected FloatingActionButton insertSessionButton;
     private Button logout_button;
-
+    private static final String TAG = "DataDisplay";
 
 
 
@@ -78,15 +79,22 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
         is_admin = intent.getBooleanExtra("admin", false);
         final Intent intent2=new Intent(this,UserLogin.class);
 
+        insertSessionButton = findViewById(R.id.InsertSessionButton);
         username = intent.getStringExtra("username");
+
+
         logout_button=findViewById(R.id.logout_button);
+
+
         if(!is_admin)
         {
+
            logout_button.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View v) {
                    m_disconnect();
                    startActivity(intent2);
+
 
                }
            });
@@ -94,6 +102,15 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
         else
         {   logout_button.setVisibility(View.GONE);
         }
+        insertSessionButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Log.d(TAG, "floating button onclick");
+            InsertSessionsDialog dialog = new InsertSessionsDialog();
+            dialog.show(getSupportFragmentManager(), "Insert Session");
+        }
+    });
+
         TextView label_username = findViewById(R.id.label_username);
         label_username.setText(username);
 
@@ -210,7 +227,7 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
         }
 
         String clientId = MqttClient.generateClientId();
-         client = new MqttAndroidClient(this.getApplicationContext(),MQTTHOST,
+         client = new MqttAndroidClient(this.getApplicationContext(),MQTTtestHOST,
                         clientId);
 
         mqttThread = new Thread(new Runnable() {

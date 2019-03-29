@@ -14,14 +14,5 @@
 
     </ListView>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/InsertSessionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="27dp"
-        android:clickable="true"
-        app:srcCompat="@android:drawable/ic_input_add"
-        android:layout_alignParentRight="true" />
+
 </RelativeLayout>

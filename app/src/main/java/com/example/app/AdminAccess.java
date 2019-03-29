@@ -22,6 +22,7 @@ public class AdminAccess extends AppCompatActivity {
 
 
     public void goStartPage(View view)
+
     {
         Intent intent=new Intent(this,MainActivity.class);
         startActivity(intent);
@@ -41,6 +42,11 @@ public class AdminAccess extends AppCompatActivity {
         Intent intent=new Intent(this, DataDisplay.class);
         intent.putExtra("username",intent_admin);
         intent.putExtra("admin", true);
+        startActivity(intent);
+    }
+    public void toManageUsers(View view)
+    {
+        Intent intent=new Intent(this, AdminUsersDisplay.class);
         startActivity(intent);
     }
 }

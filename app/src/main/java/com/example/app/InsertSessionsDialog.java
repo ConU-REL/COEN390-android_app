@@ -49,11 +49,10 @@ public class InsertSessionsDialog extends DialogFragment {
                 String users = userEditText.getText().toString();
                 String errors = errorsEditText.getText().toString();
 
-
                 if(!(title.equals("") || users.equals("") )) {
                     DatabaseHelper dbhelper = new DatabaseHelper(getActivity());
                     dbhelper.insertSession(new Sessions(-1, title, users,errors));
-                    ((SavedSession)getActivity()).loadListView();
+                    //((SavedSession)getActivity()).loadListView();
                     getDialog().dismiss();
                 }
 

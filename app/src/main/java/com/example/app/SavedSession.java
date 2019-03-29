@@ -27,15 +27,16 @@ public class SavedSession extends AppCompatActivity {
         SessionsListView = findViewById(R.id.SessionsListView);
         insertSessionButton = findViewById(R.id.InsertSessionButton);
 
+
         loadListView();
-        insertSessionButton.setOnClickListener(new View.OnClickListener() {
+        /*insertSessionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "floating button onclick");
                 InsertSessionsDialog dialog = new InsertSessionsDialog();
-                dialog.show(getSupportFragmentManager(), "Insert Course");
+                dialog.show(getSupportFragmentManager(), "Insert Session");
             }
-        });
+        });*/
     }
     protected void loadListView()
     {
