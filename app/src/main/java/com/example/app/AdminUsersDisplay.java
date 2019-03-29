@@ -160,6 +160,7 @@ public class AdminUsersDisplay extends AppCompatActivity
             public void messageArrived(String topic, MqttMessage message)
             {
                 UserInputsList.add(new String (message.getPayload()));
+                if(!new String (message.getPayload()).isEmpty())
                 addloadListView();
             }
 
