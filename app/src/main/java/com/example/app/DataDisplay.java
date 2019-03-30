@@ -63,7 +63,7 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
     Button action_reconnect;
     String MQTTtestHOST="tcp://broker.hivemq.com:1883";
     String MQTTHOST="tcp://10.0.22.10:1883";
-    protected FloatingActionButton insertSessionButton;
+    protected Button insertSessionButton;
     private Button logout_button;
     private static final String TAG = "DataDisplay";
 
@@ -88,7 +88,7 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
 
         if(!is_admin)
         {
-
+            insertSessionButton.setVisibility(View.GONE);
            logout_button.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View v) {
@@ -105,9 +105,9 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
         insertSessionButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Log.d(TAG, "floating button onclick");
+            Log.d(TAG, "Session Save button onclick");
             InsertSessionsDialog dialog = new InsertSessionsDialog();
-            dialog.show(getSupportFragmentManager(), "Insert Session");
+            dialog.show(getSupportFragmentManager(), "Save Session");
         }
     });
 
