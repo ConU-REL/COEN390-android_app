@@ -44,16 +44,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         // Create tables SQL execution
-        String CREATE_COURSE_TABLE = "CREATE TABLE " + Config.TABLE_SESSION+ "("
+        String CREATE_SESSION_TABLE = "CREATE TABLE " + Config.TABLE_SESSION+ "("
                 + Config.COLUMN_SESSION_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + Config.COLUMN_SESSION_TITLE+ " TEXT NOT NULL, "
                 + Config.COLUMN_SESSION_ERRORS+ " TEXT NOT NULL, "
                 + Config.COLUMN_SESSION_USERS+ " TEXT NOT NULL "
                 + ")";
 
-        Log.d(TAG,"Table create SQL: " + CREATE_COURSE_TABLE);
+        Log.d(TAG,"Table create SQL: " + CREATE_SESSION_TABLE);
 
-        db.execSQL(CREATE_COURSE_TABLE);
+        db.execSQL(CREATE_SESSION_TABLE);
 
         Log.d(TAG,"DB created!");
     }
@@ -180,6 +180,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return deleteStatus;
+    }
+    
+    public List<User> getAllUsers()
+    {
+        
     }
 
 
