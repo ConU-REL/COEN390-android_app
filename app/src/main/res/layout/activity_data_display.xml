@@ -288,6 +288,7 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
+    <!--
 
     <android.support.design.widget.NavigationView
 
@@ -299,5 +300,6 @@
         app:menu="@menu/drawermenu">
 
     </android.support.design.widget.NavigationView>
+    -->
 
 </android.support.v4.widget.DrawerLayout>

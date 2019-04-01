@@ -33,7 +33,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class DataDisplay extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class DataDisplay extends AppCompatActivity {
 
 
     protected ImageView closeReconnect;
@@ -118,15 +118,14 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
 
         connection_progressBar=findViewById(R.id.connection_progressBar);
 
-        //The following lines are for the navigation menu
+        /*//The following lines are for the navigation menu
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle=new ActionBarDrawerToggle(this,drawer,R.string.open,R.string.close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
+        navigationView.setNavigationItemSelectedListener(this);*/
         ecu_status = findViewById(R.id.ecu_stat);
         ecu_status.setText("Disconnected");
         ecu_status.setTextColor(Color.RED);
@@ -167,6 +166,7 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
             e.printStackTrace();
         }
     }
+    /*
     @Override
     public void onBackPressed()
     {
@@ -176,10 +176,10 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
         } else {
             super.onBackPressed();
         }
-    }
+    }*/
 
 
-    @Override
+    /*@Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item)
     {
         int id = item.getItemId();
@@ -212,7 +212,7 @@ public class DataDisplay extends AppCompatActivity implements NavigationView.OnN
         DrawerLayout drawer =findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
+    }*/
 
 
     //Connect to the server
