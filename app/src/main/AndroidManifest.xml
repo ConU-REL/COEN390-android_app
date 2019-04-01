@@ -33,7 +33,7 @@
         </activity>
         <activity
             android:name=".AdminAccess"
-            android:label="Admin Access">
+            android:label="Dashboard">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.app.AdminLogin" />

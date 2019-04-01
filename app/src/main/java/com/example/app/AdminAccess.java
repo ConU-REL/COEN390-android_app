@@ -49,4 +49,9 @@ public class AdminAccess extends AppCompatActivity {
         Intent intent=new Intent(this, AdminUsersDisplay.class);
         startActivity(intent);
     }
+    public void goSettings(View view)
+    {
+        Intent intent=new Intent(this, DataDisplaySettings.class);
+        startActivity(intent);
+    }
 }
