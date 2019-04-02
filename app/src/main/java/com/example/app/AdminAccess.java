@@ -30,7 +30,6 @@ public class AdminAccess extends AppCompatActivity {
         session_history=findViewById(R.id.session_historyview);
         new_session=findViewById(R.id.new_sessionview);
         manage_users=findViewById(R.id.manage_usersview);
-        settings=findViewById(R.id.settingsview);
         logout=findViewById(R.id.logoutview);
 
         switch_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -43,7 +42,6 @@ public class AdminAccess extends AppCompatActivity {
                     layout.setBackgroundResource(R.drawable.menu_header);
                     session_history.setCardBackgroundColor(getResources().getColor(R.color.colorGray));
                     new_session.setCardBackgroundColor(getResources().getColor(R.color.colorGray));
-                    settings.setCardBackgroundColor(getResources().getColor(R.color.colorGray));
                     manage_users.setCardBackgroundColor(getResources().getColor(R.color.colorGray));
                     logout.setCardBackgroundColor(getResources().getColor(R.color.colorGray));
 
@@ -52,7 +50,6 @@ public class AdminAccess extends AppCompatActivity {
                     layout.setBackgroundResource(R.drawable.dashboard_header);
                     session_history.setCardBackgroundColor(getResources().getColor(R.color.colorLightBlue));
                     new_session.setCardBackgroundColor(getResources().getColor(R.color.colorLightGreen));
-                    settings.setCardBackgroundColor(getResources().getColor(R.color.colorLightOrange));
                     manage_users.setCardBackgroundColor(getResources().getColor(R.color.colorLavender));
                     logout.setCardBackgroundColor(getResources().getColor(R.color.colorLightRed));
                 }
@@ -87,11 +84,6 @@ public class AdminAccess extends AppCompatActivity {
     public void toManageUsers(View view)
     {
         Intent intent=new Intent(this, AdminUsersDisplay.class);
-        startActivity(intent);
-    }
-    public void goSettings(View view)
-    {
-        Intent intent=new Intent(this, DataDisplaySettings.class);
         startActivity(intent);
     }
 }

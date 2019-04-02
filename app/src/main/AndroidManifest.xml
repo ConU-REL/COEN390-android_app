@@ -25,13 +25,6 @@
                 android:value="com.example.app.DataDisplay" />
         </activity>
         <activity
-            android:name=".DataDisplaySettings"
-            android:label="Data Settings">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.app.DataDisplay" />
-        </activity>
-        <activity
             android:name=".AdminAccess"
             android:label="Dashboard">
             <meta-data
@@ -50,7 +43,7 @@
             android:label="Session">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.app.DataDisplaySettings" />
+                android:value="com.example.app.SavedSession" />
         </activity>
         <activity android:name=".UserLogin">
             <meta-data
