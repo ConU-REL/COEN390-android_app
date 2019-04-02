@@ -25,7 +25,7 @@ public class SavedSession extends AppCompatActivity {
         setContentView(R.layout.activity_saved_session);
 
         SessionsListView = findViewById(R.id.SessionsListView);
-        insertSessionButton = findViewById(R.id.InsertSessionButton);
+        //insertSessionButton = findViewById(R.id.InsertSessionButton);
 
 
         loadListView();

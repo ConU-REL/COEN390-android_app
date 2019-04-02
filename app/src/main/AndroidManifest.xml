@@ -22,7 +22,7 @@
             >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.app.AdminAccess" />
+                android:value="com.example.app.DataDisplay" />
         </activity>
         <activity
             android:name=".DataDisplaySettings"
@@ -50,7 +50,7 @@
             android:label="Session">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.app.AdminAccess" />
+                android:value="com.example.app.DataDisplaySettings" />
         </activity>
         <activity android:name=".UserLogin">
             <meta-data

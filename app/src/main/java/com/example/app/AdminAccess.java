@@ -1,15 +1,22 @@
 package com.example.app;
 
 import android.content.Intent;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class AdminAccess extends AppCompatActivity {
-
+    protected Switch switch_button;
     String intent_admin;
+    ConstraintLayout layout;
+    CardView session_history,new_session,manage_users,settings,logout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,6 +25,39 @@ public class AdminAccess extends AppCompatActivity {
         TextView admin_name = findViewById(R.id.label_username);
         intent_admin = intent.getStringExtra("username");
         admin_name.setText(intent_admin);
+        switch_button=findViewById(R.id.switch_button);
+        layout=findViewById(R.id.layout);
+        session_history=findViewById(R.id.session_historyview);
+        new_session=findViewById(R.id.new_sessionview);
+        manage_users=findViewById(R.id.manage_usersview);
+        settings=findViewById(R.id.settingsview);
+        logout=findViewById(R.id.logoutview);
+
+        switch_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if(isChecked==true)
+                {
+                    Toast.makeText(getBaseContext(),"Dark Theme",Toast.LENGTH_SHORT).show();
+                    layout.setBackgroundResource(R.drawable.menu_header);
+                    session_history.setCardBackgroundColor(getResources().getColor(R.color.colorGray));
+                    new_session.setCardBackgroundColor(getResources().getColor(R.color.colorGray));
+                    settings.setCardBackgroundColor(getResources().getColor(R.color.colorGray));
+                    manage_users.setCardBackgroundColor(getResources().getColor(R.color.colorGray));
+                    logout.setCardBackgroundColor(getResources().getColor(R.color.colorGray));
+
+                }
+                else{
+                    layout.setBackgroundResource(R.drawable.dashboard_header);
+                    session_history.setCardBackgroundColor(getResources().getColor(R.color.colorLightBlue));
+                    new_session.setCardBackgroundColor(getResources().getColor(R.color.colorLightGreen));
+                    settings.setCardBackgroundColor(getResources().getColor(R.color.colorLightOrange));
+                    manage_users.setCardBackgroundColor(getResources().getColor(R.color.colorLavender));
+                    logout.setCardBackgroundColor(getResources().getColor(R.color.colorLightRed));
+                }
+            }
+        });
     }
 
 
