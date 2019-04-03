@@ -11,9 +11,13 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.app.Sessions;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -79,12 +83,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Config.COLUMN_SESSION_USERS, session.getUsers());
 
 
-
         try {
             id = sqLiteDatabase.insertOrThrow(Config.TABLE_SESSION, null, contentValues);
         } catch (SQLiteException e){
             Log.d(TAG,"Exception: " + e.getMessage());
-            Toast.makeText(context, "Operation failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "Operation failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
         } finally {
             sqLiteDatabase.close();
         }
@@ -181,6 +184,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return deleteStatus;
     }
+
 
 
 

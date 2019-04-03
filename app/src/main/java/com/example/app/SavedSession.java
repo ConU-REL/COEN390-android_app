@@ -1,5 +1,6 @@
 package com.example.app;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +19,8 @@ public class SavedSession extends AppCompatActivity {
     protected ListView SessionsListView;
     private static final String TAG = "SavedSession";
     List<Sessions> sessions = null;
+    Sessions session;
+    SharedPreferencesHelper sharedPreferencesHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +29,14 @@ public class SavedSession extends AppCompatActivity {
 
         SessionsListView = findViewById(R.id.SessionsListView);
         //insertSessionButton = findViewById(R.id.InsertSessionButton);
+        sharedPreferencesHelper=new SharedPreferencesHelper(this);
 
-
+        DatabaseHelper db= new DatabaseHelper(this);
+        Intent intent=getIntent();
+        String title=sharedPreferencesHelper.getSessionName();
+        String users=sharedPreferencesHelper.getSessionUsers();
+        String errors=sharedPreferencesHelper.getSessionErrors();
+        db.insertSession(new Sessions(-1, title, users,errors));
         loadListView();
         /*insertSessionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,8 +57,30 @@ public class SavedSession extends AppCompatActivity {
             String temp = "";
             listSessions.add(sessions.get(i).getSession_name() + "\n"+ sessions.get(i).getUsers()+ "\n"+ sessions.get(i).getWarnings());
         }
-        ArrayAdapter adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,listSessions);
+        ArrayList<String>
+                newList = removeDuplicates(listSessions);
+        ArrayAdapter adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,newList);
         SessionsListView.setAdapter(adapter);
 
+    }
+    public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list)
+    {
+
+        // Create a new ArrayList
+        ArrayList<T> newList = new ArrayList<T>();
+
+        // Traverse through the first list
+        for (T element : list) {
+
+            // If this element is not present in newList
+            // then add it
+            if (!newList.contains(element)) {
+
+                newList.add(element);
+            }
+        }
+
+        // return the new list
+        return newList;
     }
 }

@@ -66,6 +66,8 @@ public class DataDisplay extends AppCompatActivity {
     protected Button insertSessionButton;
     private Button logout_button;
     private static final String TAG = "DataDisplay";
+    SharedPreferencesHelper sharedPreferencesHelper;
+
 
 
 
@@ -85,7 +87,7 @@ public class DataDisplay extends AppCompatActivity {
 
         logout_button=findViewById(R.id.logout_button);
 
-
+    sharedPreferencesHelper=new SharedPreferencesHelper(this);
         if(!is_admin)
         {
             insertSessionButton.setVisibility(View.GONE);
@@ -105,9 +107,14 @@ public class DataDisplay extends AppCompatActivity {
         insertSessionButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Log.d(TAG, "Session Save button onclick");
-            InsertSessionsDialog dialog = new InsertSessionsDialog();
-            dialog.show(getSupportFragmentManager(), "Save Session");
+            //Log.d(TAG, "Session Save button onclick");
+            //InsertSessionsDialog dialog = new InsertSessionsDialog();
+            //dialog.show(getSupportFragmentManager(), "Save Session");
+            sharedPreferencesHelper.saveSessionName("SESSION 1");
+            sharedPreferencesHelper.saveSessionUsers("NO USERS");
+            sharedPreferencesHelper.saveSessionError("NO ERROR");
+            Toast.makeText(getBaseContext(),"SAVED",Toast.LENGTH_SHORT).show();
+
         }
     });
 
