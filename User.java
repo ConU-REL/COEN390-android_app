@@ -1,4 +1,4 @@
-package com.example.app;
+package com.example.d_gille.myapplication;
 
 public class User
 {
@@ -46,4 +46,6 @@ public class User
     public void setSessionID(long sessionID) {
         this.sessionID = sessionID;
     }
+
+
 }
