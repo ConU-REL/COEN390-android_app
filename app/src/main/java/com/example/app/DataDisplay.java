@@ -39,12 +39,14 @@ public class DataDisplay extends AppCompatActivity {
     protected ImageView closeReconnect;
     protected Dialog reconnect;
     protected Button reconnect_button;
+    protected Button start_engine_button;
 
 
     MqttAndroidClient client;
     private ProgressBar connection_progressBar;
     Thread mqttThread;
     IMqttToken connection;
+    boolean STOP=false;
     //array to store peak data from car
     ArrayList<String> dataRed = new ArrayList<>();
 
@@ -158,7 +160,22 @@ public class DataDisplay extends AppCompatActivity {
         for(int i=0; i<fields.size(); i++){
             fields.get(i).setText("0");
         }
+        start_engine_button=findViewById(R.id.start_engine_button);
+        start_engine_button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
 
+                 Toast.makeText(getBaseContext(),"START ENGINE",Toast.LENGTH_SHORT).show();
+                 m_publish_engineStart();
+                return false;
+            }
+        });
+       start_engine_button.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               m_publish_engineStop();
+           }
+       });
         m_connect(findViewById(android.R.id.content));
     }
     private void m_disconnect()
@@ -240,6 +257,49 @@ public class DataDisplay extends AppCompatActivity {
         int qos=1;
         try {
             client.publish(topic, username.getBytes(),qos,true);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+    public void m_publish_engineStart()
+    {
+
+        String topic ="control/engine";
+        JSONObject msgstart;
+        msgstart = new JSONObject();
+        try{
+            msgstart.put("crank",1);
+        }catch(JSONException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+
+        int qos=1;
+        String start=msgstart.toString();
+        try {
+            client.publish(topic, start.getBytes(),qos,true);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+    public void m_publish_engineStop()
+    {
+
+        String topic ="control/engine";
+        JSONObject msgstop;
+        msgstop = new JSONObject();
+        try{
+            msgstop.put("crank",0);
+        }catch(JSONException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        String stop=msgstop.toString();
+        int qos=1;
+        try {
+            client.publish(topic, stop.getBytes(),qos,true);
         } catch (MqttException e) {
             e.printStackTrace();
         }
