@@ -11,14 +11,8 @@ public class Config {
     public static final String COLUMN_SESSION_USERS = "users";
     public static final String COLUMN_SESSION_ERRORS = "warnings";
     
-    //column names of the users table
-    public static final String USERS_TABLE="Users";
-    public static final String COLUMN_USER_NAMES="users_names";
-    public static final String COLUMN_USERS_ID="users_id";
-    
-    
-
-
-
-
+    //column names for the users
+    public static final String TABLE_USERS="Users";
+    public static final String COLUMN_USER_NAMES="user_name";
+    public static final String COLUMN_USER_ID="user_id";
 }
