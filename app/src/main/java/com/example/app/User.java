@@ -3,7 +3,6 @@ package com.example.app;
 public class User
 {
     private String userName;
-
     private Integer userID;
     private long sessionID;
 
@@ -30,9 +29,8 @@ public class User
     {
         this.userName = userName;
     }
-   
-    public Integer getUserID()
 
+    public Integer getUserID()
     {
         return userID;
     }
