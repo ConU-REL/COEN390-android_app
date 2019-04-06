@@ -28,7 +28,6 @@ public class SavedSession extends AppCompatActivity {
         setContentView(R.layout.activity_saved_session);
 
         SessionsListView = findViewById(R.id.SessionsListView);
-        //insertSessionButton = findViewById(R.id.InsertSessionButton);
         sharedPreferencesHelper=new SharedPreferencesHelper(this);
 
         DatabaseHelper db= new DatabaseHelper(this);
@@ -38,14 +37,6 @@ public class SavedSession extends AppCompatActivity {
         String errors=sharedPreferencesHelper.getSessionErrors();
         db.insertSession(new Sessions(-1, title, users,errors));
         loadListView();
-        /*insertSessionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "floating button onclick");
-                InsertSessionsDialog dialog = new InsertSessionsDialog();
-                dialog.show(getSupportFragmentManager(), "Insert Session");
-            }
-        });*/
     }
     protected void loadListView()
     {

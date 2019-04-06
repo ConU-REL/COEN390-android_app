@@ -1,7 +1,5 @@
 package com.example.d_gille.myapplication;
 
-
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,20 +19,16 @@ public class InsertUserDialogFragment extends DialogFragment
     protected Button saveUserButton;
     protected Button cancelUserButton;
 
-    SharedPreferencesHelper sharedPreferencesHelper;
-    public long sessionID;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
 
         View view=inflater.inflate(R.layout.fragment_insert_user,container,false);
         userNameEditText= view.findViewById(R.id.userNameEditText);
         userIDEditText=view.findViewById(R.id.userIDEditText);
         saveUserButton=view.findViewById(R.id.saveUserButton);
         cancelUserButton=view.findViewById(R.id.cancelUserButton);
-        Context thisContext=getActivity();
-        sharedPreferencesHelper=new SharedPreferencesHelper(thisContext);
-
 
         saveUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,8 +41,6 @@ public class InsertUserDialogFragment extends DialogFragment
                 if(!(name.equals("") || id.equals("")))
                     dbHelper.insertUsers(new User(name,Integer.parseInt(id),-1));
                 ((SavedUsersActivity)getActivity()).loadListView(-1);
-                sharedPreferencesHelper.saveUserID(id);
-                sharedPreferencesHelper.saveUserName(name);
                 getDialog().dismiss();
 
             }
@@ -63,4 +55,6 @@ public class InsertUserDialogFragment extends DialogFragment
 
         return view;
     }
+
+
 }
