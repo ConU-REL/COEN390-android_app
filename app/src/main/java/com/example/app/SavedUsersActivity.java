@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import com.example.d_gille.myapplication.Database.DatabaseHelper;
 
 import java.util.ArrayList;
@@ -18,11 +17,9 @@ public class SavedUsersActivity extends AppCompatActivity
     protected ListView usersListView;
     protected FloatingActionButton addUserFloatingButton;
     SharedPreferencesHelper sharedPreferencesHelper;
-    User users;
-    long sessionID;
-    Integer userID;
 
-
+    long sessionID=-1;
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +29,6 @@ public class SavedUsersActivity extends AppCompatActivity
         //DatabaseHelper dbHelper=new DatabaseHelper(this);
         //dbHelper.insertUsers(new User("Dave",1));
         sharedPreferencesHelper=new SharedPreferencesHelper(this);
-
         DatabaseHelper db=new DatabaseHelper(this);
 
         usersListView=findViewById(R.id.usersListView);
@@ -40,9 +36,12 @@ public class SavedUsersActivity extends AppCompatActivity
 
         String name=sharedPreferencesHelper.getUserName();
         final Bundle bundle=getIntent().getExtras();
-        sessionID=bundle.getLong("Session ID");
-        userID=bundle.getInt("User ID");
-        db.insertUsers(new User(name,userID,sessionID));
+        //Intent intent=getIntent();
+        userID=sharedPreferencesHelper.getUserID();
+
+        if (userID != null) {
+            db.insertUsers(new User(name,Integer.parseInt(userID),sessionID));
+        }
 
 
         loadListView(sessionID);
@@ -103,5 +102,4 @@ public class SavedUsersActivity extends AppCompatActivity
         // return the new list
         return newList;
     }
-
 }

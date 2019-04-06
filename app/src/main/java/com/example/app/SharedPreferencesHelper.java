@@ -1,10 +1,11 @@
-package com.example.app;
+package com.example.d_gille.myapplication;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
 public class SharedPreferencesHelper
 {
+
     private SharedPreferences sharedPreferences;
     public SharedPreferencesHelper(Context context)
     {
@@ -17,6 +18,14 @@ public class SharedPreferencesHelper
     {
         SharedPreferences.Editor editor=sharedPreferences.edit();
         editor.putString("User Name",name);
+        //Consider using `apply()` instead; `commit` writes its fields to persistent storage immediately, whereas `apply` will handle it in the background
+        editor.commit();
+    }
+
+    public void saveUserID(String ID)
+    {
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putString("User id",ID);
         //Consider using `apply()` instead; `commit` writes its fields to persistent storage immediately, whereas `apply` will handle it in the background
         editor.commit();
     }
@@ -61,10 +70,14 @@ public class SharedPreferencesHelper
         return sharedPreferences.getString("User Name",null );
     }
 
+    public String getUserID()
+    {
+        return sharedPreferences.getString("User ID", null);
+    }
+
     public String getDataDisplay()
     {
         return sharedPreferences.getString("Data Inputs",null);
     }
-
 
 }
