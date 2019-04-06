@@ -11,22 +11,15 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_display"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_display_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".SavedSession"
             android:label="Saved Session"
             >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.app.AdminAccess" />
-        </activity>
-        <activity
-            android:name=".DataDisplaySettings"
-            android:label="Data Settings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.app.DataDisplay" />
@@ -50,7 +43,7 @@
             android:label="Session">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.app.AdminAccess" />
+                android:value="com.example.app.SavedSession" />
         </activity>
         <activity android:name=".UserLogin">
             <meta-data

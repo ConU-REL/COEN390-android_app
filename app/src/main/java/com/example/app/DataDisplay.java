@@ -40,10 +40,13 @@ public class DataDisplay extends AppCompatActivity {
     protected Dialog reconnect;
     protected Button reconnect_button;
 
+
     MqttAndroidClient client;
     private ProgressBar connection_progressBar;
     Thread mqttThread;
     IMqttToken connection;
+    //array to store peak data from car
+    ArrayList<String> dataRed = new ArrayList<>();
 
     // user info
     boolean is_admin = false;
@@ -66,6 +69,8 @@ public class DataDisplay extends AppCompatActivity {
     protected Button insertSessionButton;
     private Button logout_button;
     private static final String TAG = "DataDisplay";
+    SharedPreferencesHelper sharedPreferencesHelper;
+
 
 
 
@@ -82,10 +87,9 @@ public class DataDisplay extends AppCompatActivity {
         insertSessionButton = findViewById(R.id.InsertSessionButton);
         username = intent.getStringExtra("username");
 
-
         logout_button=findViewById(R.id.logout_button);
 
-
+    sharedPreferencesHelper=new SharedPreferencesHelper(this);
         if(!is_admin)
         {
             insertSessionButton.setVisibility(View.GONE);
@@ -105,9 +109,16 @@ public class DataDisplay extends AppCompatActivity {
         insertSessionButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Log.d(TAG, "Session Save button onclick");
-            InsertSessionsDialog dialog = new InsertSessionsDialog();
-            dialog.show(getSupportFragmentManager(), "Save Session");
+
+            sharedPreferencesHelper.saveSessionName("SESSION 1");
+
+            sharedPreferencesHelper.saveSessionUsers("NO USERS");
+            if (dataRed.isEmpty())
+                sharedPreferencesHelper.saveSessionError("NO WARNINGS GENERATED!!");
+            else
+                sharedPreferencesHelper.saveSessionError(dataRed.toString());
+            Toast.makeText(getBaseContext(),"SAVED",Toast.LENGTH_SHORT).show();
+
         }
     });
 
@@ -118,14 +129,7 @@ public class DataDisplay extends AppCompatActivity {
 
         connection_progressBar=findViewById(R.id.connection_progressBar);
 
-        /*//The following lines are for the navigation menu
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle=new ActionBarDrawerToggle(this,drawer,R.string.open,R.string.close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);*/
         ecu_status = findViewById(R.id.ecu_stat);
         ecu_status.setText("Disconnected");
         ecu_status.setTextColor(Color.RED);
@@ -166,54 +170,6 @@ public class DataDisplay extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    /*
-    @Override
-    public void onBackPressed()
-    {
-        DrawerLayout drawer =findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }*/
-
-
-    /*@Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item)
-    {
-        int id = item.getItemId();
-
-        if(id==R.id.db)
-        {
-
-        startActivity(new Intent(this, AdminAccess.class));
-        }
-        else if (id==R.id.Data)
-        {
-
-        startActivity(new Intent(this, DataDisplaySettings.class));
-        }
-        else if (id==R.id.Contact_Driver)
-        {
-
-        startActivity(new Intent(this, AdminAccess.class));
-        }
-         else if (id==R.id.Manage_Users)
-        {
-
-        startActivity(new Intent(this, AdminUsersDisplay.class));
-        }
-        else if (id==R.id.Logout) {
-
-        startActivity(new Intent(this, MainActivity.class));
-        }
-
-        DrawerLayout drawer =findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }*/
-
 
     //Connect to the server
     public void m_connect(View v)
@@ -354,6 +310,7 @@ public class DataDisplay extends AppCompatActivity {
 
                                 if(data.get(0) > 12500){
                                     fields.get(0).setTextColor(Color.RED);
+                                    dataRed.add("rpm: "+ data.get(0));
                                 } else {
                                     fields.get(0).setTextColor(Color.BLACK);
                                 }
@@ -362,6 +319,7 @@ public class DataDisplay extends AppCompatActivity {
                                    fields.get(1).setTextColor(Color.BLUE);
                                } else if(data.get(2) > 120) {
                                    fields.get(1).setTextColor(Color.RED);
+                                   dataRed.add("oil_temp: "+ data.get(1));
                                } else {
                                    fields.get(1).setTextColor(Color.GREEN);
                                }
@@ -370,12 +328,15 @@ public class DataDisplay extends AppCompatActivity {
                                    fields.get(2).setTextColor(Color.BLUE);
                                } else if(data.get(2) > 110) {
                                    fields.get(2).setTextColor(Color.RED);
+                                   dataRed.add("coolant_temp: "+ data.get(2));
+
                                } else {
                                    fields.get(2).setTextColor(Color.GREEN);
                                }
 
                                if(data.get(3) < 390 || data.get(1) > 430){
                                    fields.get(3).setTextColor(Color.RED);
+                                   dataRed.add("fuel_pressure: "+ data.get(3));
                                } else {
                                    fields.get(3).setTextColor(Color.GREEN);
                                }
