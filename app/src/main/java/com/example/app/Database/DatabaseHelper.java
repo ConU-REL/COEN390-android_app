@@ -85,6 +85,121 @@ public class DatabaseHelper extends SQLiteOpenHelper
         onCreate(db);
     }
 
+    public long insertSession(Sessions session){
+
+        long id = -1;
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Config.COLUMN_SESSION_TITLE, session.getSession_name());
+        contentValues.put(Config.COLUMN_SESSION_ERRORS, session.getWarnings());
+        contentValues.put(Config.COLUMN_SESSION_USERS, session.getUsers());
+
+
+        try {
+            id = sqLiteDatabase.insertOrThrow(Config.TABLE_SESSION, null, contentValues);
+        } catch (SQLiteException e){
+            Log.d(TAG,"Exception: " + e.getMessage());
+            //Toast.makeText(context, "Operation failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        } finally {
+            sqLiteDatabase.close();
+        }
+
+        return id;
+    }
+
+    public List<Sessions> getAllSessions(){
+
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        try {
+
+            cursor = sqLiteDatabase.query(Config.TABLE_SESSION, null, null, null, null, null, null, null);
+
+            /**
+             // If you want to execute raw query then uncomment below 2 lines. And comment out above line.
+             String SELECT_QUERY = String.format("SELECT %s, %s, %s, %s, %s FROM %s", Config.COLUMN_STUDENT_ID, Config.COLUMN_STUDENT_NAME, Config.COLUMN_STUDENT_REGISTRATION, Config.COLUMN_STUDENT_EMAIL, Config.COLUMN_STUDENT_PHONE, Config.TABLE_STUDENT);
+             cursor = sqLiteDatabase.rawQuery(SELECT_QUERY, null);
+             */
+
+            if(cursor!=null)
+                if(cursor.moveToFirst()){
+                    List<Sessions> sessionList = new ArrayList<>();
+                    do {
+                        int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_SESSION_ID));
+                        String title = cursor.getString(cursor.getColumnIndex(Config.COLUMN_SESSION_TITLE));
+                        String users = cursor.getString(cursor.getColumnIndex(Config.COLUMN_SESSION_USERS));
+                        String errors = cursor.getString(cursor.getColumnIndex(Config.COLUMN_SESSION_ERRORS));
+
+                        sessionList.add(new Sessions(id, title, users,errors));
+                    }   while (cursor.moveToNext());
+
+                    return sessionList;
+                }
+        } catch (Exception e){
+            Log.d(TAG,"Exception: " + e.getMessage());
+            Toast.makeText(context, "Operation failed", Toast.LENGTH_SHORT).show();
+        } finally {
+            if(cursor!=null)
+                cursor.close();
+            sqLiteDatabase.close();
+        }
+
+        return Collections.emptyList();
+    }
+
+    public long updateSessionInfo(Sessions session){
+
+        long rowCount = 0;
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Config.COLUMN_SESSION_TITLE, session.getSession_name());
+        contentValues.put(Config.COLUMN_SESSION_USERS, session.getUsers());
+        contentValues.put(Config.COLUMN_SESSION_ERRORS, session.getWarnings());
+
+        try {
+            rowCount = sqLiteDatabase.update(Config.TABLE_SESSION, contentValues,
+                    Config.COLUMN_SESSION_ID + " = ? ",
+                    new String[] {String.valueOf(session.getSession_id())});
+        } catch (SQLiteException e){
+            Log.d(TAG,"Exception: " + e.getMessage());
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+        } finally {
+            sqLiteDatabase.close();
+        }
+
+        return rowCount;
+    }
+
+
+    public boolean deleteAllSessions(){
+        boolean deleteStatus = false;
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+
+        try {
+            //for "1" delete() method returns number of deleted rows
+            //if you don't want row count just use delete(TABLE_NAME, null, null)
+            sqLiteDatabase.delete(Config.TABLE_SESSION, null, null);
+
+            long count = DatabaseUtils.queryNumEntries(sqLiteDatabase, Config.TABLE_SESSION);
+
+            if(count==0)
+                deleteStatus = true;
+
+        } catch (SQLiteException e){
+            Log.d(TAG,"Exception: " + e.getMessage());
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+        } finally {
+            sqLiteDatabase.close();
+        }
+
+        return deleteStatus;
+    }
+
+
+
 
 
 
@@ -220,6 +335,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return null;
 
     }
+
 
 
 
