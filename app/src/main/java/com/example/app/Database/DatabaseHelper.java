@@ -24,6 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 {
 
 
+
     private static final String TAG = "DatabaseHelper";
 
     // All Static variables
@@ -341,6 +342,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
 
 
+
+
+
+   
 }
 
 
