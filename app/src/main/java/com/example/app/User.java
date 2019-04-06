@@ -3,10 +3,19 @@ package com.example.app;
 public class User
 {
     private String userName;
-    private long userID;
+
+    private Integer userID;
+    private long sessionID;
 
 
-    public User(String userName, long userID)
+    public User(String userName, Integer userID,long sessionID)
+    {
+        this.userName=userName;
+        this.userID=userID;
+        this.sessionID=sessionID;
+    }
+
+    public User(String userName,Integer userID)
     {
         this.userName=userName;
         this.userID=userID;
@@ -21,15 +30,22 @@ public class User
     {
         this.userName = userName;
     }
+   
+    public Integer getUserID()
 
-    public long getUserID()
     {
         return userID;
     }
 
-    public void setUserID(long userID)
-    {
-        this.userID=userID;
+    public void setUserID(Integer userID) {
+        this.userID = userID;
     }
 
+    public long getSessionID() {
+        return sessionID;
+    }
+
+    public void setSessionID(long sessionID) {
+        this.sessionID = sessionID;
+    }
 }
