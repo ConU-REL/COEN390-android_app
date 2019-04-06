@@ -5,26 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AdminLogin"
-    android:background="@drawable/dashboard_header"
+    android:background="@drawable/background5"
     >
 
 
-
-    <Button
+    <ImageView
         android:id="@+id/admin_login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="52dp"
+        android:layout_height="61dp"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="36dp"
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
         android:onClick="goAdminSettings"
-        android:text="@string/admin_login_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/adminPassword"
-        />
+        app:srcCompat="@drawable/ic_input_black_24dp" />
 
     <EditText
         android:id="@+id/adminName"
@@ -43,7 +41,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
         android:background="@color/colorWhite"
-        android:drawableLeft="@drawable/ic_person_black_24dp"/>
+        android:drawableLeft="@drawable/ic_person_black_24dp"
+        android:drawableStart="@drawable/ic_person_black_24dp" />
 
     <EditText
         android:id="@+id/adminPassword"
@@ -62,7 +61,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/adminName"
         android:background="@color/colorWhite"
-        android:drawableLeft="@drawable/ic_lock_black_24dp"/>
+        android:drawableLeft="@drawable/ic_lock_black_24dp"
+        android:drawableStart="@drawable/ic_lock_black_24dp" />
 
     <ImageView
         android:id="@+id/imageView"
