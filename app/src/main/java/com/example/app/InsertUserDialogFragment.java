@@ -16,16 +16,17 @@ import com.example.d_gille.myapplication.Database.DatabaseHelper;
 
 public class InsertUserDialogFragment extends DialogFragment
 {
+
     protected EditText userNameEditText;
     protected EditText userIDEditText;
     protected Button saveUserButton;
     protected Button cancelUserButton;
-
     SharedPreferencesHelper sharedPreferencesHelper;
-    public long sessionID;
-    @Nullable
+
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
 
         View view=inflater.inflate(R.layout.fragment_insert_user,container,false);
         userNameEditText= view.findViewById(R.id.userNameEditText);
@@ -63,4 +64,5 @@ public class InsertUserDialogFragment extends DialogFragment
 
         return view;
     }
+
 }
