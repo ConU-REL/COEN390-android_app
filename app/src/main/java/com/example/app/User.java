@@ -1,4 +1,4 @@
-package com.example.d_gille.myapplication;
+package com.example.app;
 
 public class User
 {
