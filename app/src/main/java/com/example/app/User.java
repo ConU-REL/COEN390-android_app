@@ -2,6 +2,8 @@ package com.example.app;
 
 public class User
 {
+    
+
     private String userName;
     private Integer userID;
     private long sessionID;
