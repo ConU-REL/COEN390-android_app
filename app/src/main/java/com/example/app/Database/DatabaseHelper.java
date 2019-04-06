@@ -59,6 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(CREATE_COURSE_TABLE);
         
+
         String CREATE_USERS_TABLE = "CREATE TABLE " + Config.TABLE_USERS + "("
                     + Config.COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + Config.COLUMN_USER_NAMES + " TEXT NOT NULL "
@@ -68,14 +69,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Log.d(TAG, "Table create SQL: " + CREATE_USERS_TABLE);
 
             db.execSQL(CREATE_USERS_TABLE);
-
-
         Log.d(TAG,"DB created!");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older table if existed
+        // Drop older tables if existed
         db.execSQL("DROP TABLE IF EXISTS " + Config.TABLE_SESSION);
         db.execSQL("DROP TABLE IF EXISTS " + Config.TABLE_USERS);
 
@@ -197,44 +196,114 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return deleteStatus;
     }
     
-    public long insertUsers (User users)
-        {
+    public List<User> getAllUsers()
+    {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
-            long id = -1;
-            SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        Cursor cursor = null;
+        try {
 
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(Config.COLUMN_USER_NAMES, users.getUserName());
-            contentValues.put(Config.COLUMN_USER_ID, users.getUserID());
+            cursor = sqLiteDatabase.query(Config.USERS_TABLE, null, null, null, null, null, null, null);
+
+            /**
+             // If you want to execute raw query then uncomment below 2 lines. And comment out above line.
+             String SELECT_QUERY = String.format("SELECT %s, %s, %s, %s, %s FROM %s", Config.COLUMN_STUDENT_ID, Config.COLUMN_STUDENT_NAME, Config.COLUMN_STUDENT_REGISTRATION, Config.COLUMN_STUDENT_EMAIL, Config.COLUMN_STUDENT_PHONE, Config.TABLE_STUDENT);
+             cursor = sqLiteDatabase.rawQuery(SELECT_QUERY, null);
+             */
+
+            if (cursor != null)
+                if (cursor.moveToFirst()) {
+                    List<User> usersList = new ArrayList<>();
+                    do {
+                        int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USERS_ID));
+                        String name = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_NAMES));
+                        long session_id=cursor.getInt(cursor.getColumnIndex(Config.COLUMN_SESSION_ID));
 
 
-            try {
-                id = sqLiteDatabase.insertOrThrow(Config.TABLE_USERS, null, contentValues);
-            } catch (SQLiteException e) {
-                Log.d(TAG, "Exception: " + e.getMessage());
-                Toast.makeText(context, "Operation failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            } finally {
-                sqLiteDatabase.close();
-            }
+                        usersList.add(new User(name,id,session_id));
+                    } while (cursor.moveToNext());
 
-            return id;
+                    return usersList;
+                }
+        } catch (Exception e) {
+            Log.d(TAG, "Exception: " + e.getMessage());
+            Toast.makeText(context, "Operation failed", Toast.LENGTH_SHORT).show();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            sqLiteDatabase.close();
         }
 
-        public List<User> getAllUsers()
-        {
-            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        return Collections.emptyList();
+    }
 
-            Cursor cursor = null;
-            try {
+    public List<User> getListUsersByID(long sessionID)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
 
-                cursor = sqLiteDatabase.query(Config.TABLE_USERS, null, null, null, null, null, null, null);
+        try {
+            cursor = db.query(Config.USERS_TABLE, null, Config.COLUMN_SESSION_ID + "= ?", new String[] {String.valueOf(sessionID)}, null, null, null);
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    List<User> users = new ArrayList<>();
+                    do {
+                        int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USERS_ID));
+                        String name = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_NAMES));
 
-                /**
-                 // If you want to execute raw query then uncomment below 2 lines. And comment out above line.
-                 String SELECT_QUERY = String.format("SELECT %s, %s, %s, %s, %s FROM %s", Config.COLUMN_STUDENT_ID, Config.COLUMN_STUDENT_NAME, Config.COLUMN_STUDENT_REGISTRATION, Config.COLUMN_STUDENT_EMAIL, Config.COLUMN_STUDENT_PHONE, Config.TABLE_STUDENT);
-                 cursor = sqLiteDatabase.rawQuery(SELECT_QUERY, null);
-                 */
+                        users.add(new User(name,id,sessionID));
+                    } while (cursor.moveToNext());
 
+                    return users;
+                }
+
+            }
+        } catch (SQLException e) {
+            Log.d(TAG, "EXCEPTION:" + e);
+            Toast.makeText(context, "Operation Failed!: " + e, Toast.LENGTH_LONG).show();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+
+            db.close();
+        }
+
+
+        return Collections.emptyList();
+    }
+
+    public User getUserByID(Integer userID)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.query(Config.USERS_TABLE, null, Config.COLUMN_USERS_ID + "= ?", new String[]{String.valueOf(userID)}, null, null, null);
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+
+                    int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USERS_ID));
+                    String name = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_NAMES));
+
+
+                    return new User(name,id);
+                }
+            }
+
+
+        } catch (SQLException e) {
+            Log.d(TAG, "EXCEPTION:" + e);
+            Toast.makeText(context, "Operation Failed!: " + e, Toast.LENGTH_LONG).show();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+
+            db.close();
+        }
+
+        return null;
+
+    }
                 if (cursor != null)
                     if (cursor.moveToFirst()) {
                         List<User> usersList = new ArrayList<>();
@@ -245,7 +314,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                             usersList.add(new User(name,id));
                         } while (cursor.moveToNext());
-
                         return usersList;
                     }
             } catch (Exception e) {
