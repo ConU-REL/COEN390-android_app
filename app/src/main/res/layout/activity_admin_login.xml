@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AdminLogin"
-    android:background="@drawable/dashboard_header"
-    >
+    android:background="@drawable/newbackground"
+    tools:context=".AdminLogin">
 
 
     <TextView
@@ -68,14 +66,14 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
+        android:background="@color/colorWhite"
+        android:drawableLeft="@drawable/ic_lock"
         android:ems="10"
-        android:padding="4dp"
         android:hint="@string/password_display"
         android:inputType="textPassword"
+        android:padding="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/adminName"
-        android:background="@color/colorWhite"
-        android:drawableLeft="@drawable/ic_lock"/>
+        app:layout_constraintTop_toBottomOf="@+id/adminName" />
 
 </android.support.constraint.ConstraintLayout>
