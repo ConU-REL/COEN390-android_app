@@ -1,5 +1,6 @@
 package com.example.app;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -46,7 +48,6 @@ public class DataDisplay extends AppCompatActivity {
     private ProgressBar connection_progressBar;
     Thread mqttThread;
     IMqttToken connection;
-    boolean STOP=false;
     //array to store peak data from car
     ArrayList<String> dataRed = new ArrayList<>();
 
@@ -66,16 +67,18 @@ public class DataDisplay extends AppCompatActivity {
     TextView ecu_status;
     TextView server_status;
     Button action_reconnect;
-    String MQTTtestHOST="tcp://broker.hivemq.com:1883";
-    String MQTTHOST="tcp://10.0.22.10:1883";
     protected Button insertSessionButton;
     private Button logout_button;
     private static final String TAG = "DataDisplay";
     SharedPreferencesHelper sharedPreferencesHelper;
 
+    // Set the following variable to true for MQTT testing, set to false to actually use it on
+    // the car properly
+    boolean test_mqtt = false;
+    String MQTTHOST = test_mqtt ? "tcp://broker.hivemq.com:1883" : "tcp://10.0.22.10:1883";
 
 
-
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -156,26 +159,38 @@ public class DataDisplay extends AppCompatActivity {
         fields_nc_labels.add((TextView) findViewById(R.id.label_launch));
 
 
-
         for(int i=0; i<fields.size(); i++){
             fields.get(i).setText("0");
         }
+
+
+        // handle starting/stopping the engine
+        final boolean[] clicked = {false};
         start_engine_button=findViewById(R.id.start_engine_button);
         start_engine_button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
 
                 Toast.makeText(getBaseContext(),"START ENGINE",Toast.LENGTH_SHORT).show();
-                m_publish_engineStart();
+                m_publish_engine(true);
+                clicked[0] = true;
                 return false;
             }
         });
-        start_engine_button.setOnClickListener(new View.OnClickListener() {
+
+        start_engine_button.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                m_publish_engineStop();
+            public boolean onTouch(View v, MotionEvent event) {
+                if((event.getAction() == MotionEvent.ACTION_UP ||
+                        event.getAction() == MotionEvent.ACTION_CANCEL ) && clicked[0]){
+                    Toast.makeText(getBaseContext(),"STOP ENGINE",Toast.LENGTH_SHORT).show();
+                    m_publish_engine(false);
+                    clicked[0] = false;
+                }
+                return false;
             }
         });
+
         m_connect(findViewById(android.R.id.content));
     }
     private void m_disconnect()
@@ -200,7 +215,7 @@ public class DataDisplay extends AppCompatActivity {
         }
 
         String clientId = MqttClient.generateClientId();
-        client = new MqttAndroidClient(this.getApplicationContext(),MQTTtestHOST,
+        client = new MqttAndroidClient(this.getApplicationContext(),MQTTHOST,
                 clientId);
 
         mqttThread = new Thread(new Runnable() {
@@ -261,45 +276,22 @@ public class DataDisplay extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    public void m_publish_engineStart()
-    {
 
+    public void m_publish_engine(boolean state){
         String topic ="control/engine";
-        JSONObject msgstart;
-        msgstart = new JSONObject();
+        JSONObject msg;
+        msg = new JSONObject();
+        int val = state ? 1 : 0;
+
         try{
-            msgstart.put("crank",1);
+            msg.put("crank",val);
         }catch(JSONException e)
         {
             throw new RuntimeException(e);
         }
 
-
-        int qos=1;
-        String start=msgstart.toString();
         try {
-            client.publish(topic, start.getBytes(),qos,true);
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-    }
-    public void m_publish_engineStop()
-    {
-
-        String topic ="control/engine";
-        JSONObject msgstop;
-        msgstop = new JSONObject();
-        try{
-            msgstop.put("crank",0);
-        }catch(JSONException e)
-        {
-            throw new RuntimeException(e);
-        }
-
-        String stop=msgstop.toString();
-        int qos=1;
-        try {
-            client.publish(topic, stop.getBytes(),qos,true);
+            client.publish(topic, msg.toString().getBytes(),0,true);
         } catch (MqttException e) {
             e.printStackTrace();
         }
