@@ -15,4 +15,5 @@ public class Config {
     public static final String USERS_TABLE="Users";
     public static final String COLUMN_USER_NAMES="user_name";
     public static final String COLUMN_USERS_ID="user_id";
+    public static final String COLUMN_USERS_ROLES="user_roles";
 }
