@@ -73,7 +73,7 @@ public class UserInfosActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                Log.d(TAG,"onClick:Cancel Called:");
+                Log.d(TAG,"onClick:Ok Called:");
                 okMethod();
 
             }
