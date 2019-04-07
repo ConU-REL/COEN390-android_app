@@ -19,6 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,6 +71,7 @@ public class DataDisplay extends AppCompatActivity {
     Button action_reconnect;
     protected Button save_button;
     private Button logout_button;
+    protected LinearLayout access_layout;
     private static final String TAG = "DataDisplay";
     SharedPreferencesHelper sharedPreferencesHelper;
 
@@ -95,14 +97,17 @@ public class DataDisplay extends AppCompatActivity {
         username = intent.getStringExtra("username");
 
         logout_button=findViewById(R.id.logout_button);
+        access_layout=findViewById(R.id.acess_layout);
         fuel_button=findViewById(R.id.fuel_button);
         start_engine_button=findViewById(R.id.start_engine_button);
         sharedPreferencesHelper=new SharedPreferencesHelper(this);
+        reconnect = new Dialog(this);
         if(!is_admin)
         {
             save_button.setVisibility(View.GONE);
             fuel_button.setVisibility(View.GONE);
             start_engine_button.setVisibility(View.GONE);
+            Show_access_popup();
             logout_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -115,6 +120,7 @@ public class DataDisplay extends AppCompatActivity {
         }
         else
         {   logout_button.setVisibility(View.GONE);
+        access_layout.setVisibility(View.GONE);
 
         }
         save_button.setOnClickListener(new View.OnClickListener() {
@@ -136,7 +142,7 @@ public class DataDisplay extends AppCompatActivity {
         TextView label_username = findViewById(R.id.label_username);
         label_username.setText(username);
 
-        reconnect = new Dialog(this);
+
 
         connection_progressBar=findViewById(R.id.connection_progressBar);
 

@@ -24,6 +24,7 @@ public class AdminAccess extends AppCompatActivity {
         TextView admin_name = findViewById(R.id.label_username);
         intent_admin = intent.getStringExtra("username");
         admin_name.setText(intent_admin);
+        switch_button=findViewById(R.id.switch_button);
     }
 
 
