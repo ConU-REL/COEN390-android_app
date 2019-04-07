@@ -10,12 +10,14 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/colorOrange"
         android:visibility="visible">
 
         <TextView
             android:id="@+id/data_temp_c"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
             app:layout_constraintBaseline_toBaselineOf="@+id/label_ctemp"
             app:layout_constraintStart_toStartOf="@+id/data_temp_o"
             tools:text="Coolant Temp" />
@@ -24,6 +26,7 @@
             android:id="@+id/data_temp_o"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
             app:layout_constraintBaseline_toBaselineOf="@+id/label_otemp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -48,6 +51,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginLeft="32dp"
             android:layout_marginTop="32dp"
+            android:background="@color/colorWhite"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Username" />
@@ -56,6 +60,7 @@
             android:id="@+id/data_rpm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
             android:textSize="36sp"
             app:layout_constraintEnd_toEndOf="@+id/textView11"
             app:layout_constraintStart_toStartOf="@+id/textView11"
@@ -67,6 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
+            android:background="@color/colorWhite"
             android:text="Oil Temp: "
             app:layout_constraintEnd_toStartOf="@+id/data_temp_o"
             app:layout_constraintHorizontal_bias="0.51"
@@ -78,6 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:background="@color/colorWhite"
             android:text="Coolant Temp:"
             app:layout_constraintStart_toStartOf="@+id/label_otemp"
             app:layout_constraintTop_toBottomOf="@+id/label_otemp" />
@@ -87,6 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:background="@color/colorWhite"
             android:text="Fuel Pressure:"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="@+id/label_ctemp"
@@ -96,6 +104,7 @@
             android:id="@+id/data_press_f"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
             app:layout_constraintBaseline_toBaselineOf="@+id/label_fpress"
             app:layout_constraintStart_toStartOf="@+id/data_temp_c"
             tools:text="Fuel Pressure" />
@@ -105,6 +114,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:background="@color/colorWhite"
             android:text="ECU:"
             app:layout_constraintStart_toStartOf="@+id/label_username"
             app:layout_constraintTop_toBottomOf="@+id/label_server_stat" />
@@ -113,6 +123,7 @@
             android:id="@+id/ecu_stat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
             app:layout_constraintBaseline_toBaselineOf="@+id/label_ecu_stat"
             app:layout_constraintStart_toStartOf="@+id/server_stat"
             tools:text="Connected" />
@@ -126,6 +137,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
+            android:background="@color/colorWhite"
             android:text="RPM:"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -136,6 +148,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:background="@color/colorWhite"
             android:text="Server:"
             app:layout_constraintStart_toStartOf="@+id/label_username"
             app:layout_constraintTop_toBottomOf="@+id/label_username" />
@@ -146,6 +159,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginLeft="32dp"
+            android:background="@color/colorWhite"
             app:layout_constraintBaseline_toBaselineOf="@+id/label_server_stat"
             app:layout_constraintStart_toEndOf="@+id/label_server_stat"
             tools:text="Connected" />
@@ -260,42 +274,71 @@
 
         <Button
             android:id="@+id/logout_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="111dp"
+            android:layout_height="75dp"
             android:layout_marginStart="32dp"
             android:layout_marginLeft="32dp"
+            android:layout_marginTop="111dp"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
             android:layout_marginBottom="1dp"
-            android:text="Logout"
+            android:background="@drawable/exit"
             app:layout_constraintBottom_toTopOf="@+id/toggleButton"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_launch" />
 
         <Button
             android:id="@+id/InsertSessionButton"
-            android:layout_width="74dp"
+            android:layout_width="76dp"
             android:layout_height="61dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginStart="44dp"
+            android:layout_marginLeft="44dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="47dp"
+            android:layout_marginRight="47dp"
+            android:layout_marginBottom="500dp"
             android:text="SAVE"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toStartOf="@+id/data_rpm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.993" />
 
         <Button
             android:id="@+id/start_engine_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginLeft="50dp"
             android:layout_marginTop="100dp"
             android:layout_marginEnd="29dp"
             android:layout_marginRight="29dp"
+            android:layout_marginBottom="52dp"
             android:text="START"
+            app:layout_constraintBottom_toTopOf="@+id/data_temp_o"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/data_rpm"
             app:layout_constraintTop_toBottomOf="@+id/connection_progressBar" />
+
+        <Button
+            android:id="@+id/fuel_button"
+            android:layout_width="102dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="97dp"
+            android:layout_marginLeft="97dp"
+            android:layout_marginTop="74dp"
+            android:layout_marginEnd="36dp"
+            android:layout_marginRight="36dp"
+            android:layout_marginBottom="585dp"
+            android:text="FUEL PUMP"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ecu_stat"
+            app:layout_constraintTop_toTopOf="@+id/connection_progressBar"
+            app:layout_constraintVertical_bias="0.0" />
 
     </android.support.constraint.ConstraintLayout>
     <!--
