@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 
 public class SharedPreferencesHelper
 {
-
     private SharedPreferences sharedPreferences;
     public SharedPreferencesHelper(Context context)
     {
@@ -18,6 +17,14 @@ public class SharedPreferencesHelper
     {
         SharedPreferences.Editor editor=sharedPreferences.edit();
         editor.putString("User Name",name);
+        //Consider using `apply()` instead; `commit` writes its fields to persistent storage immediately, whereas `apply` will handle it in the background
+        editor.commit();
+    }
+
+    public void saveUserRole(String role)
+    {
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putString("User Role",role);
         //Consider using `apply()` instead; `commit` writes its fields to persistent storage immediately, whereas `apply` will handle it in the background
         editor.commit();
     }
@@ -75,9 +82,15 @@ public class SharedPreferencesHelper
         return sharedPreferences.getString("User ID", null);
     }
 
+    public String getUserRole()
+    {
+        return sharedPreferences.getString("User Role",null );
+    }
+
     public String getDataDisplay()
     {
         return sharedPreferences.getString("Data Inputs",null);
     }
+
     
 }
