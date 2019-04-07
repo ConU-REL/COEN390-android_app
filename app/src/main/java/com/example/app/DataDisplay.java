@@ -75,8 +75,9 @@ public class DataDisplay extends AppCompatActivity {
 
     // Set the following variable to true for MQTT testing, set to false to actually use it on
     // the car properly
-    boolean test_mqtt = true;
+    boolean test_mqtt = false;
     String MQTTHOST = test_mqtt ? "tcp://broker.hivemq.com:1883" : "tcp://10.0.22.10:1883";
+    private Integer rpm;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -188,8 +189,40 @@ public class DataDisplay extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 if((event.getAction() == MotionEvent.ACTION_UP ||
                         event.getAction() == MotionEvent.ACTION_CANCEL ) && clicked[0]){
+                    if(rpm>2000)
+                    {
+                        start_engine_button.setText("STOP");
+                    }
+                    else
+                    {
+                        start_engine_button.setText("START");
+                    }
                     Toast.makeText(getBaseContext(),"STOP ENGINE",Toast.LENGTH_SHORT).show();
                     m_publish_engine(false);
+                    clicked[0] = false;
+                }
+                return false;
+            }
+        });
+        fuel_button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                Toast.makeText(getBaseContext(),"START FUEL PUMP",Toast.LENGTH_SHORT).show();
+                m_publish_fuel(true);
+                clicked[0] = true;
+                return false;
+            }
+        });
+
+        fuel_button.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if((event.getAction() == MotionEvent.ACTION_UP ||
+                        event.getAction() == MotionEvent.ACTION_CANCEL ) && clicked[0]){
+
+                    Toast.makeText(getBaseContext(),"STOP FUEL PUMP",Toast.LENGTH_SHORT).show();
+                    m_publish_fuel(false);
                     clicked[0] = false;
                 }
                 return false;
@@ -301,6 +334,25 @@ public class DataDisplay extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    public void m_publish_fuel(boolean state){
+        String topic ="control/fuel_pump";
+        JSONObject msg;
+        msg = new JSONObject();
+        int val = state ? 1 : 0;
+
+        try{
+            msg.put("pump",val);
+        }catch(JSONException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            client.publish(topic, msg.toString().getBytes(),0,true);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     // this method subscribes to the topic passed in the parameter
@@ -368,6 +420,7 @@ public class DataDisplay extends AppCompatActivity {
                                 if(data.get(0) > 12500){
                                     fields.get(0).setTextColor(Color.RED);
                                     dataRed.add("rpm: "+ data.get(0));
+                                    rpm=data.get(0);
                                 } else {
                                     fields.get(0).setTextColor(Color.BLACK);
                                 }
