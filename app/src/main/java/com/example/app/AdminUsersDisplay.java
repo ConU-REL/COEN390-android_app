@@ -65,7 +65,7 @@ public class AdminUsersDisplay extends AppCompatActivity
     {
 
         String clientId = MqttClient.generateClientId();
-        client = new MqttAndroidClient(this.getApplicationContext(), MQTTHOST,
+        client = new MqttAndroidClient(this.getApplicationContext(), MQTTtestHOST,
                 clientId);
         UserInputsList=new ArrayList<>();
 

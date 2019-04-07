@@ -1,31 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AdminLogin"
-    android:background="@drawable/background5"
     >
 
 
-    <ImageView
-        android:id="@+id/admin_login_button"
-        android:layout_width="52dp"
-        android:layout_height="61dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
-        android:onClick="goAdminSettings"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/adminPassword"
-        app:srcCompat="@drawable/ic_input_black_24dp" />
-
-    <EditText
-        android:id="@+id/adminName"
+    <TextView
+        android:id="@+id/admin_login_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -33,16 +18,43 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
+        android:text="@string/admin_login_message"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/admin_login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:onClick="goAdminSettings"
+        android:text="@string/admin_login_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.552"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adminPassword" />
+
+    <EditText
+        android:id="@+id/adminName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="75dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
         android:ems="10"
         android:hint="@string/admin_login_name"
-        android:padding="4dp"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        android:background="@color/colorWhite"
-        android:drawableLeft="@drawable/ic_person_black_24dp"
-        android:drawableStart="@drawable/ic_person_black_24dp" />
+        app:layout_constraintTop_toBottomOf="@+id/admin_login_message" />
 
     <EditText
         android:id="@+id/adminPassword"
@@ -54,28 +66,10 @@
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
         android:ems="10"
-        android:padding="4dp"
         android:hint="@string/password_display"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/adminName"
-        android:background="@color/colorWhite"
-        android:drawableLeft="@drawable/ic_lock_black_24dp"
-        android:drawableStart="@drawable/ic_lock_black_24dp" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="149dp"
-        android:layout_height="139dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/admin" />
+        app:layout_constraintTop_toBottomOf="@+id/adminName" />
 
 </android.support.constraint.ConstraintLayout>

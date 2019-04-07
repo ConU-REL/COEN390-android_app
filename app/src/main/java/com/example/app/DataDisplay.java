@@ -91,38 +91,38 @@ public class DataDisplay extends AppCompatActivity {
 
         logout_button=findViewById(R.id.logout_button);
 
-    sharedPreferencesHelper=new SharedPreferencesHelper(this);
+        sharedPreferencesHelper=new SharedPreferencesHelper(this);
         if(!is_admin)
         {
             insertSessionButton.setVisibility(View.GONE);
-           logout_button.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v) {
-                   m_disconnect();
-                   startActivity(intent2);
+            logout_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    m_disconnect();
+                    startActivity(intent2);
 
 
-               }
-           });
+                }
+            });
         }
         else
         {   logout_button.setVisibility(View.GONE);
         }
         insertSessionButton.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
 
-            sharedPreferencesHelper.saveSessionName("SESSION 1");
+                sharedPreferencesHelper.saveSessionName("SESSION 1");
 
-            sharedPreferencesHelper.saveSessionUsers("NO USERS");
-            if (dataRed.isEmpty())
-                sharedPreferencesHelper.saveSessionError("NO WARNINGS GENERATED!!");
-            else
-                sharedPreferencesHelper.saveSessionError(dataRed.toString());
-            Toast.makeText(getBaseContext(),"SAVED",Toast.LENGTH_SHORT).show();
+                sharedPreferencesHelper.saveSessionUsers("NO USERS");
+                if (dataRed.isEmpty())
+                    sharedPreferencesHelper.saveSessionError("NO WARNINGS GENERATED!!");
+                else
+                    sharedPreferencesHelper.saveSessionError(dataRed.toString());
+                Toast.makeText(getBaseContext(),"SAVED",Toast.LENGTH_SHORT).show();
 
-        }
-    });
+            }
+        });
 
         TextView label_username = findViewById(R.id.label_username);
         label_username.setText(username);
@@ -165,17 +165,17 @@ public class DataDisplay extends AppCompatActivity {
             @Override
             public boolean onLongClick(View v) {
 
-                 Toast.makeText(getBaseContext(),"START ENGINE",Toast.LENGTH_SHORT).show();
-                 m_publish_engineStart();
+                Toast.makeText(getBaseContext(),"START ENGINE",Toast.LENGTH_SHORT).show();
+                m_publish_engineStart();
                 return false;
             }
         });
-       start_engine_button.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               m_publish_engineStop();
-           }
-       });
+        start_engine_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                m_publish_engineStop();
+            }
+        });
         m_connect(findViewById(android.R.id.content));
     }
     private void m_disconnect()
@@ -200,8 +200,8 @@ public class DataDisplay extends AppCompatActivity {
         }
 
         String clientId = MqttClient.generateClientId();
-         client = new MqttAndroidClient(this.getApplicationContext(),MQTTtestHOST,
-                        clientId);
+        client = new MqttAndroidClient(this.getApplicationContext(),MQTTtestHOST,
+                clientId);
 
         mqttThread = new Thread(new Runnable() {
 
@@ -352,7 +352,7 @@ public class DataDisplay extends AppCompatActivity {
                 switch (topic) {
                     case "sensors/critical":
                         runOnUiThread(new Runnable() {
-                           @Override
+                            @Override
                             public void run() {
                                 try {
                                     data.clear();
@@ -375,32 +375,32 @@ public class DataDisplay extends AppCompatActivity {
                                     fields.get(0).setTextColor(Color.BLACK);
                                 }
 
-                               if(data.get(1) < 75){
-                                   fields.get(1).setTextColor(Color.BLUE);
-                               } else if(data.get(2) > 120) {
-                                   fields.get(1).setTextColor(Color.RED);
-                                   dataRed.add("oil_temp: "+ data.get(1));
-                               } else {
-                                   fields.get(1).setTextColor(Color.GREEN);
-                               }
+                                if(data.get(1) < 75){
+                                    fields.get(1).setTextColor(Color.BLUE);
+                                } else if(data.get(2) > 120) {
+                                    fields.get(1).setTextColor(Color.RED);
+                                    dataRed.add("oil_temp: "+ data.get(1));
+                                } else {
+                                    fields.get(1).setTextColor(Color.GREEN);
+                                }
 
-                               if(data.get(2) < 75){
-                                   fields.get(2).setTextColor(Color.BLUE);
-                               } else if(data.get(2) > 110) {
-                                   fields.get(2).setTextColor(Color.RED);
-                                   dataRed.add("coolant_temp: "+ data.get(2));
+                                if(data.get(2) < 75){
+                                    fields.get(2).setTextColor(Color.BLUE);
+                                } else if(data.get(2) > 110) {
+                                    fields.get(2).setTextColor(Color.RED);
+                                    dataRed.add("coolant_temp: "+ data.get(2));
 
-                               } else {
-                                   fields.get(2).setTextColor(Color.GREEN);
-                               }
+                                } else {
+                                    fields.get(2).setTextColor(Color.GREEN);
+                                }
 
-                               if(data.get(3) < 390 || data.get(1) > 430){
-                                   fields.get(3).setTextColor(Color.RED);
-                                   dataRed.add("fuel_pressure: "+ data.get(3));
-                               } else {
-                                   fields.get(3).setTextColor(Color.GREEN);
-                               }
-                           }
+                                if(data.get(3) < 390 || data.get(1) > 430){
+                                    fields.get(3).setTextColor(Color.RED);
+                                    dataRed.add("fuel_pressure: "+ data.get(3));
+                                } else {
+                                    fields.get(3).setTextColor(Color.GREEN);
+                                }
+                            }
                         });
 
                         break;
