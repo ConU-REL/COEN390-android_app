@@ -42,10 +42,11 @@ public class DataDisplay extends AppCompatActivity {
     protected Dialog reconnect;
     protected Button reconnect_button;
     protected Button start_engine_button;
-
+    protected Button fuel_button;
 
     MqttAndroidClient client;
     private ProgressBar connection_progressBar;
+
     Thread mqttThread;
     IMqttToken connection;
     //array to store peak data from car
@@ -67,14 +68,14 @@ public class DataDisplay extends AppCompatActivity {
     TextView ecu_status;
     TextView server_status;
     Button action_reconnect;
-    protected Button insertSessionButton;
+    protected Button save_button;
     private Button logout_button;
     private static final String TAG = "DataDisplay";
     SharedPreferencesHelper sharedPreferencesHelper;
 
     // Set the following variable to true for MQTT testing, set to false to actually use it on
     // the car properly
-    boolean test_mqtt = false;
+    boolean test_mqtt = true;
     String MQTTHOST = test_mqtt ? "tcp://broker.hivemq.com:1883" : "tcp://10.0.22.10:1883";
 
 
@@ -89,15 +90,18 @@ public class DataDisplay extends AppCompatActivity {
         is_admin = intent.getBooleanExtra("admin", false);
         final Intent intent2=new Intent(this,UserLogin.class);
 
-        insertSessionButton = findViewById(R.id.InsertSessionButton);
+        save_button = findViewById(R.id.save_button);
         username = intent.getStringExtra("username");
 
         logout_button=findViewById(R.id.logout_button);
-
+        fuel_button=findViewById(R.id.fuel_button);
+        start_engine_button=findViewById(R.id.start_engine_button);
         sharedPreferencesHelper=new SharedPreferencesHelper(this);
         if(!is_admin)
         {
-            insertSessionButton.setVisibility(View.GONE);
+            save_button.setVisibility(View.GONE);
+            fuel_button.setVisibility(View.GONE);
+            start_engine_button.setVisibility(View.GONE);
             logout_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -110,8 +114,9 @@ public class DataDisplay extends AppCompatActivity {
         }
         else
         {   logout_button.setVisibility(View.GONE);
+
         }
-        insertSessionButton.setOnClickListener(new View.OnClickListener() {
+        save_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -166,7 +171,7 @@ public class DataDisplay extends AppCompatActivity {
 
         // handle starting/stopping the engine
         final boolean[] clicked = {false};
-        start_engine_button=findViewById(R.id.start_engine_button);
+
         start_engine_button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
