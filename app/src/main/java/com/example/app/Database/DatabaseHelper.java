@@ -22,10 +22,7 @@ import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper 
 {
-
-
-
-    private static final String TAG = "DatabaseHelper";
+private static final String TAG = "DatabaseHelper";
 
     // All Static variables
     private static final int DATABASE_VERSION = 1;
@@ -65,8 +62,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         String CREATE_USERS_TABLE = "CREATE TABLE " + Config.USERS_TABLE + "("
                 + Config.COLUMN_USERS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + Config.COLUMN_USER_NAMES + " TEXT NOT NULL,"
-                + Config.COLUMN_SESSION_ID + " TEXT "
+                + Config.COLUMN_USER_NAMES + " TEXT NOT NULL, "
+                + Config.COLUMN_SESSION_ID + " TEXT, "
+                + Config.COLUMN_USERS_ROLES + " TEXT "
                 + ")";
 
         Log.d(TAG, "Table create SQL: " + CREATE_USERS_TABLE);
@@ -211,8 +209,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(Config.COLUMN_USER_NAMES, users.getUserName());
-        contentValues.put(Config.COLUMN_USERS_ID, users.getUserID());
         contentValues.put(Config.COLUMN_SESSION_ID,users.getSessionID());
+        contentValues.put(Config.COLUMN_USERS_ROLES,users.getUserRole());
 
 
 
@@ -250,9 +248,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
                         int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USERS_ID));
                         String name = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_NAMES));
                         long session_id=cursor.getInt(cursor.getColumnIndex(Config.COLUMN_SESSION_ID));
+                        String role=cursor.getString(cursor.getColumnIndex(Config.COLUMN_USERS_ROLES));
 
 
-                        usersList.add(new User(name,id,session_id));
+
+                        usersList.add(new User(name,id,session_id,role));
                     } while (cursor.moveToNext());
 
                     return usersList;
@@ -336,7 +336,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return null;
 
     }
-
 
 
 
