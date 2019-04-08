@@ -29,14 +29,7 @@ public class SharedPreferencesHelper
         editor.commit();
     }
 
-    public void saveUserID(String ID)
-    {
-        SharedPreferences.Editor editor=sharedPreferences.edit();
-        editor.putString("User id",ID);
-        //Consider using `apply()` instead; `commit` writes its fields to persistent storage immediately, whereas `apply` will handle it in the background
-        editor.commit();
-    }
-
+   
     public void saveSessionName(String name)
     {
         SharedPreferences.Editor editor=sharedPreferences.edit();
@@ -77,11 +70,7 @@ public class SharedPreferencesHelper
         return sharedPreferences.getString("User Name",null );
     }
 
-    public String getUserID()
-    {
-        return sharedPreferences.getString("User ID", null);
-    }
-
+   
     public String getUserRole()
     {
         return sharedPreferences.getString("User Role",null );
