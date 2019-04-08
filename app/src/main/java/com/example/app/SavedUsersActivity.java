@@ -14,9 +14,15 @@ import java.util.List;
 public class SavedUsersActivity extends AppCompatActivity
 {
 
+
     protected ListView usersListView;
     protected FloatingActionButton addUserFloatingButton;
     SharedPreferencesHelper sharedPreferencesHelper;
+
+
+
+
+
     long sessionID=-1;
     String userID;
 
@@ -40,13 +46,14 @@ public class SavedUsersActivity extends AppCompatActivity
         addUserFloatingButton=findViewById(R.id.addUserFloatingActionButton);
 
         String name=sharedPreferencesHelper.getUserName();
+        String role=sharedPreferencesHelper.getUserRole();
         final Bundle bundle=getIntent().getExtras();
         //Intent intent=getIntent();
         userID=sharedPreferencesHelper.getUserID();
 
 
         if (userID != null) {
-            db.insertUsers(new User(name,Integer.parseInt(userID),sessionID));
+            db.insertUsers(new User(name,role,sessionID));
         }
 
 
@@ -81,7 +88,7 @@ public class SavedUsersActivity extends AppCompatActivity
         {
             String temp= " ";
             temp+=users.get(i).getUserName() + "\n";
-            temp+=users.get(i).getUserID();
+            temp+=users.get(i).getUserRole();
 
             usersListText.add(temp);
         }
