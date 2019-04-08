@@ -271,13 +271,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
 
-    public User searchUserByID(Integer userID)
+    public User searchUserByName(String name)
     {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
 
         try {
-            cursor = db.query(Config.USERS_TABLE, null, Config.COLUMN_USER_ID + "= ?", new String[]{String.valueOf(userID)}, null, null, null);
+            cursor = db.query(Config.USERS_TABLE, null, Config.COLUMN_USER_NAMES + "= ?", new String[]{name}, null, null, null);
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
 
@@ -305,7 +305,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     }
 
-    public boolean deleteUserbyID(int userID)
+    public void deleteUserbyID(int userID)
     {
         SQLiteDatabase db=this.getWritableDatabase();
         try
@@ -324,7 +324,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             db.close();
         }
         
-        return true;
+        
 
     }
 
