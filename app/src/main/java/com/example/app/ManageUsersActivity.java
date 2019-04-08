@@ -34,6 +34,11 @@ public class ManageUsersActivity extends AppCompatActivity
         //DatabaseHelper dbHelper=new DatabaseHelper(this);
 
         //dbHelper.insertUsers(new User("Dave","Marechal"));
+        
+        dbHelper.insertUsers(new User("Dave","Marechal",-1)); //used as test for feature
+        dbHelper.insertUsers(new User("Ricky","team capitain",-1));  //used as test for feature
+
+
 
         usersListView = findViewById(R.id.usersListView);
         addUserButton= (Button) findViewById(R.id.addUserButton);
@@ -63,9 +68,8 @@ public class ManageUsersActivity extends AppCompatActivity
         for (int i = 0; i < usersList.size(); i++)
         {
             String temp = "";
-            temp += usersList.get(i).getUserID() + "\n";
-            temp += usersList.get(i).getUserName() + "\n";
-            temp += usersList.get(i).getUserRole();
+            temp += "Username:" + usersList.get(i).getUserName() + "\n";
+            temp += "Role:"+ usersList.get(i).getUserRole();
 
             usersListText.add(temp);
 
@@ -83,12 +87,15 @@ public class ManageUsersActivity extends AppCompatActivity
         int userID = usersList.get(position).getUserID();
         String userRole = usersList.get(position).getUserRole();
         String userName =  usersList.get(position).getUserName();
+        long session_id=usersList.get(position).getSessionID();
 
 
 
         intent.putExtra("usersID", userID);
         intent.putExtra("userName", userName);
         intent.putExtra("userRole", userRole);
+        intent.putExtra("session_id",session_id);
+      
         startActivity(intent);
 
     }
