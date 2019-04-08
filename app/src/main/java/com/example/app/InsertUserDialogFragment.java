@@ -17,8 +17,10 @@ import com.example.d_gille.myapplication.Database.DatabaseHelper;
 public class InsertUserDialogFragment extends DialogFragment
 {
 
+
+
     protected EditText userNameEditText;
-    protected EditText userIDEditText;
+    protected EditText userRoleEditText;
     protected Button saveUserButton;
     protected Button cancelUserButton;
     SharedPreferencesHelper sharedPreferencesHelper;
@@ -30,11 +32,12 @@ public class InsertUserDialogFragment extends DialogFragment
 
         View view=inflater.inflate(R.layout.fragment_insert_user,container,false);
         userNameEditText= view.findViewById(R.id.userNameEditText);
-        userIDEditText=view.findViewById(R.id.userIDEditText);
+        userRoleEditText=view.findViewById(R.id.userRoleEditText);
         saveUserButton=view.findViewById(R.id.saveUserButton);
         cancelUserButton=view.findViewById(R.id.cancelUserButton);
         Context thisContext=getActivity();
         sharedPreferencesHelper=new SharedPreferencesHelper(thisContext);
+
 
 
         saveUserButton.setOnClickListener(new View.OnClickListener() {
@@ -42,13 +45,14 @@ public class InsertUserDialogFragment extends DialogFragment
             public void onClick(View v) {
 
                 String name=userNameEditText.getText().toString();
-                String id=userIDEditText.getText().toString();
+                String role=userRoleEditText.getText().toString();
 
                 DatabaseHelper dbHelper= new DatabaseHelper(getActivity());
-                if(!(name.equals("") || id.equals("")))
-                    dbHelper.insertUsers(new User(name,Integer.parseInt(id),-1));
+                if(!(name.equals("") || role.equals("")))
+                    dbHelper.insertUsers(new User(name,role,-1));
                 ((SavedUsersActivity)getActivity()).loadListView(-1);
-                sharedPreferencesHelper.saveUserID(id);
+                //((ManageUsersActivity)getActivity()).loadListView();
+                sharedPreferencesHelper.saveUserRole(role);
                 sharedPreferencesHelper.saveUserName(name);
                 getDialog().dismiss();
 
@@ -64,5 +68,6 @@ public class InsertUserDialogFragment extends DialogFragment
 
         return view;
     }
+
 
 }
