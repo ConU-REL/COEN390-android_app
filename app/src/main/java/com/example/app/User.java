@@ -8,7 +8,7 @@ public class User
     private String userRole;
 
 
-    public User(String userName, Integer userID,long sessionID,String userRole)
+    public User(String userName, String userRole, Integer userID,long sessionID)
     {
         this.userName=userName;
         this.userID=userID;
