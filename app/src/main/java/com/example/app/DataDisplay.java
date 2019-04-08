@@ -85,7 +85,7 @@ public class DataDisplay extends AppCompatActivity {
 
         Intent intent = getIntent();
         is_admin = intent.getBooleanExtra("admin", false);
-        final Intent intent2=new Intent(this,UserLogin.class);
+        final Intent intent2=new Intent(this,MainActivity.class);
 
         save_button = findViewById(R.id.save_button);
         username = intent.getStringExtra("username");
