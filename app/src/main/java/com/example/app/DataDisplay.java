@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,8 @@ public class DataDisplay extends AppCompatActivity {
     protected Button reconnect_button;
     protected Button start_engine_button;
     protected Button fuel_button;
+    protected LinearLayout access_layout;
+
 
     MqttAndroidClient client;
     private ProgressBar connection_progressBar;
@@ -88,6 +91,7 @@ public class DataDisplay extends AppCompatActivity {
         username = intent.getStringExtra("username");
 
         logout_button=findViewById(R.id.logout_button);
+        access_layout=findViewById(R.id.acess_layout);
         fuel_button=findViewById(R.id.fuel_button);
         start_engine_button=findViewById(R.id.start_engine_button);
         sharedPreferencesHelper=new SharedPreferencesHelper(this);
@@ -106,6 +110,7 @@ public class DataDisplay extends AppCompatActivity {
         }
         else
         {   logout_button.setVisibility(View.GONE);
+            access_layout.setVisibility(View.GONE);
 
         }
         save_button.setOnClickListener(new View.OnClickListener() {
