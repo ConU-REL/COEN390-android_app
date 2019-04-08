@@ -305,8 +305,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     }
 
-    public void deleteUserbyID(int userID)
-    {SQLiteDatabase db=this.getWritableDatabase();
+    public boolean deleteUserbyID(int userID)
+    {
+        SQLiteDatabase db=this.getWritableDatabase();
         try
         {
             db.delete(Config.USERS_TABLE, Config.COLUMN_USER_ID + " = ? ", new String[]{String.valueOf(userID)});
@@ -322,6 +323,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         {
             db.close();
         }
+        
+        return true;
 
     }
 
