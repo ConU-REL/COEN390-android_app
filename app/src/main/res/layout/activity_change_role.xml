@@ -4,25 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UserInfosActivity">
+    tools:context=".ChangeRoleActivity">
 
     <Button
-        android:id="@+id/updateButton"
+        android:id="@+id/updateRoleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="81dp"
+        android:layout_marginBottom="66dp"
         android:text="update" />
 
     <EditText
         android:id="@+id/changeRoleEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="124dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="73dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name" />
+        android:hint="Role"
+        android:inputType="textPersonName" />
+
 </RelativeLayout>

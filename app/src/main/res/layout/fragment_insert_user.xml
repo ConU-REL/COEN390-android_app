@@ -9,8 +9,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="139dp"
-        android:layout_marginEnd="42dp"
+        android:layout_marginBottom="70dp"
+        android:layout_marginEnd="43dp"
         android:text="save" />
 
     <Button
@@ -19,30 +19,29 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignTop="@+id/saveUserButton"
-        android:layout_marginStart="59dp"
-        android:text="Cancel" />
-
+        android:layout_marginStart="52dp"
+        android:text="@android:string/cancel" />
 
     <EditText
         android:id="@+id/userNameEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
+        android:layout_marginStart="71dp"
+        android:layout_marginTop="71dp"
         android:ems="10"
         android:hint="Username"
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/userIDEditText"
+        android:id="@+id/userRoleEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="170dp"
-        android:digits='"0123456789"'
+        android:layout_marginTop="188dp"
         android:ems="10"
-        android:hint="ID"
+        android:hint="Role"
         android:inputType="textPersonName" />
 </RelativeLayout>
