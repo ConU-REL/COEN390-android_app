@@ -297,6 +297,7 @@ public class DataDisplay extends AppCompatActivity {
         }
     }
 
+
     public void m_publish_engine(boolean state){
         String topic ="control/engine";
         JSONObject msg;
@@ -346,7 +347,7 @@ public class DataDisplay extends AppCompatActivity {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken)
                 {
-                    //Toast.makeText(DataDisplay.this,"Subscribed to "+topic,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DataDisplay.this,"Subscribed to "+topic,Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -365,6 +366,7 @@ public class DataDisplay extends AppCompatActivity {
         subscription_handler("status/module");
         subscription_handler("sensors/critical");
         subscription_handler("sensors/non_critical");
+        subscription_handler("data/access/"+username);
 
         client.setCallback(new MqttCallback() {
             @Override
@@ -379,7 +381,26 @@ public class DataDisplay extends AppCompatActivity {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws JSONException {
                 final JSONObject msg = new JSONObject(new String (message.getPayload()));
+                if (topic.equals("data/access/"+username))
+                {  if(!is_admin)
+                {
+                    boolean access = false;
+                    try {
+                        access= Integer.parseInt(msg.getString("access")) == 1;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
+                    if (access)
+                    {
+                        Toast.makeText(DataDisplay.this, "Waiting access....", Toast.LENGTH_SHORT).show();
+
+                          access_layout.setVisibility(View.GONE);
+                    }
+
+                }
+
+                }
                 switch (topic) {
                     case "sensors/critical":
                         runOnUiThread(new Runnable() {
@@ -485,6 +506,8 @@ public class DataDisplay extends AppCompatActivity {
                         });
 
                         break;
+
+
                     default:
 
                         break;

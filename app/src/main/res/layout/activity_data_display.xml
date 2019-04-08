@@ -313,7 +313,8 @@
             app:layout_constraintBottom_toTopOf="@+id/fuel_button"
             app:layout_constraintEnd_toEndOf="@+id/fuel_button"
             app:layout_constraintStart_toStartOf="@+id/fuel_button" />
-        <LinearLayout
+
+    <LinearLayout
             android:id="@+id/acess_layout"
             android:layout_width="match_parent"
             android:layout_height="738dp"

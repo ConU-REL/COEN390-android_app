@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -20,6 +21,8 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -29,7 +32,7 @@ import java.util.Set;
 public class AdminUsersDisplay extends AppCompatActivity
 {
     protected RecyclerView connected_users_list;
-    protected ListView disconnected_users_list;
+    protected CheckBox checkBox;
 
     String MQTTtestHOST="tcp://broker.hivemq.com:1883";
     String MQTTHOST="tcp://10.0.22.10:1883";
@@ -46,7 +49,12 @@ public class AdminUsersDisplay extends AppCompatActivity
         setContentView(R.layout.activity_admin_users_display);
         connected_users_list=findViewById(R.id.connected_users_list);
         refress_button=findViewById(R.id.refresh_button);
-        m_connect();
+        checkBox=findViewById(R.id.checkbox);
+
+        if(checkBox.isChecked())
+        {
+
+        }
         refress_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -99,7 +107,7 @@ public class AdminUsersDisplay extends AppCompatActivity
 
     private void loadListView()
     {
-       // if(isActive) { refresh(5000);}
+
 
         RecyclerViewAdapter adapter=new RecyclerViewAdapter(adddataInputsListText,this);
         connected_users_list.setAdapter(adapter);
@@ -108,19 +116,6 @@ public class AdminUsersDisplay extends AppCompatActivity
 
 
     }
-  /* private void refresh(int milliseconds) {
-        final Handler handler=new Handler();
-        final Runnable runnable=new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                UserInputsList.clear();
-                m_subscribe_add();
-            }
-        };
-
-    }*/
 
     public void m_subscribe_add()
     {
@@ -172,6 +167,25 @@ public class AdminUsersDisplay extends AppCompatActivity
 
 
 
+    }
+    public void m_publish_access(boolean state,String username){
+        String topic ="data/access"+username;
+        JSONObject msg;
+        msg = new JSONObject();
+        int val = state ? 1 : 0;
+
+        try{
+            msg.put("access",val);
+        }catch(JSONException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            client.publish(topic, msg.toString().getBytes(),0,true);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addloadListView()
