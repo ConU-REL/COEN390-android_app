@@ -215,7 +215,7 @@ public class AdminUsersDisplay extends AppCompatActivity implements RecyclerView
     }
     @Override
     public void onNoteClick(int position) {
-        name=adddataInputsListText.get(position);
+        name=newList.get(position);
         m_publish_access(name);
         Toast.makeText(getBaseContext(),"Access granted to "+ name,Toast.LENGTH_SHORT).show();
 
