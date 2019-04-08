@@ -99,6 +99,7 @@ public class DataDisplay extends AppCompatActivity {
         if (!is_admin) {
             fuel_button.setVisibility(View.GONE);
             start_engine_button.setVisibility(View.GONE);
+            access_layout.setVisibility(View.VISIBLE);
         } else {
             access_layout.setVisibility(View.GONE);
         }
@@ -320,7 +321,7 @@ public class DataDisplay extends AppCompatActivity {
             subToken.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Toast.makeText(DataDisplay.this, "Subscribed to " + topic, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(DataDisplay.this, "Subscribed to " + topic, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
