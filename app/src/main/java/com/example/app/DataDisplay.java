@@ -34,9 +34,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class DataDisplay extends AppCompatActivity {
-    protected ImageView closeReconnect;
-    protected Dialog reconnect;
-    protected Button reconnect_button;
+    protected Dialog flag;
     protected Button start_engine_button;
     protected Button fuel_button;
     protected LinearLayout access_layout;
@@ -97,14 +95,24 @@ public class DataDisplay extends AppCompatActivity {
         sharedPreferencesHelper = new SharedPreferencesHelper(this);
 
         if (!is_admin) {
+            // hide admin buttons if not admin
             fuel_button.setVisibility(View.GONE);
             start_engine_button.setVisibility(View.GONE);
+
+            TextView label_engine_control = findViewById(R.id.label_engine_control);
+            TextView label_fuel_pump = findViewById(R.id.label_fuel_pump);
+
+            label_engine_control.setVisibility(View.GONE);
+            label_fuel_pump.setVisibility(View.GONE);
+
+            invalidateOptionsMenu();
         } else {
             access_layout.setVisibility(View.GONE);
+            invalidateOptionsMenu();
+
         }
 
-        reconnect = new Dialog(this);
-
+        
         connection_progressBar = findViewById(R.id.connection_progressBar);
 
 
@@ -500,10 +508,14 @@ public class DataDisplay extends AppCompatActivity {
         if (!activity_running) {
             return;
         }
+        ImageView close_image;
+        final Dialog reconnect = new Dialog(this);
+        Button reconnect_button;
+
         reconnect.setContentView(R.layout.popup_failed_connection);
-        closeReconnect = reconnect.findViewById(R.id.closeReconnect);
+        close_image = reconnect.findViewById(R.id.closeReconnect);
         reconnect_button = reconnect.findViewById(R.id.reconnect_button);
-        closeReconnect.setOnClickListener(new View.OnClickListener() {
+        close_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 reconnect.dismiss();
@@ -519,6 +531,68 @@ public class DataDisplay extends AppCompatActivity {
         reconnect.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         reconnect.show();
     }
+
+    private void show_flag_dialog() {
+        ImageView close_image;
+        final Dialog flag = new Dialog(this);
+        ArrayList<Button> buttons = new ArrayList<>();
+
+        flag.setContentView(R.layout.popup_send_flag);
+        close_image = flag.findViewById(R.id.flag_close);
+
+        buttons.add((Button) flag.findViewById(R.id.flag_none));
+        buttons.add((Button) flag.findViewById(R.id.flag_green));
+        buttons.add((Button) flag.findViewById(R.id.flag_yellow));
+        buttons.add((Button) flag.findViewById(R.id.flag_red));
+        buttons.add((Button) flag.findViewById(R.id.flag_orange));
+        buttons.add((Button) flag.findViewById(R.id.flag_cancel));
+
+        for(int i=0; i<buttons.size()-1; i++){
+            final int finalI = i;
+            buttons.get(i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    m_publish_flag(finalI);
+                }
+            });
+        }
+
+        buttons.get(buttons.size()-1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flag.dismiss();
+            }
+        });
+
+        close_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flag.dismiss();
+            }
+        });
+
+        flag.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        flag.show();
+    }
+
+
+    public void m_publish_flag(int type){
+        String topic = "control/comms";
+        JSONObject msg;
+        msg = new JSONObject();
+        try {
+            msg.put("flag", type);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            client.publish(topic, msg.toString().getBytes(), 0, true);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void toggle_non_critical() {
         non_critical = !non_critical;
@@ -549,6 +623,15 @@ public class DataDisplay extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_admin_data, menu);
+
+        if(!is_admin) {
+            menu.findItem(R.id.save_session).setVisible(false);
+            menu.findItem(R.id.save_session).setEnabled(false);
+
+            menu.findItem(R.id.send_flag).setVisible(false);
+            menu.findItem(R.id.send_flag).setEnabled(false);
+        }
+
         return true;
     }
 
@@ -570,6 +653,10 @@ public class DataDisplay extends AppCompatActivity {
                 else
                     sharedPreferencesHelper.saveSessionError(dataRed.toString());
                 Toast.makeText(getBaseContext(), "SAVED", Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.send_flag:
+                show_flag_dialog();
                 return true;
 
             case R.id.reconnect:

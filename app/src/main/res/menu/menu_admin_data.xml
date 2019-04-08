@@ -8,12 +8,17 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/save_session"
-        android:title="Save Session"
+        android:id="@+id/send_flag"
+        android:title="Send Flag"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/reconnect"
         android:title="Reconnect to Server"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/save_session"
+        android:title="Save Session"
         app:showAsAction="never" />
 </menu>
