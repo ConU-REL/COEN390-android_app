@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/toggle_data"
+        android:title="Toggle Non-Critical Data"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/save_session"
+        android:title="Save Session"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/reconnect"
+        android:title="Reconnect to Server"
+        app:showAsAction="never" />
+</menu>

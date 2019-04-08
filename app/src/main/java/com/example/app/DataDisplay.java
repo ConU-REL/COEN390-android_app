@@ -8,6 +8,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -30,8 +34,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class DataDisplay extends AppCompatActivity {
-
-
     protected ImageView closeReconnect;
     protected Dialog reconnect;
     protected Button reconnect_button;
@@ -63,9 +65,6 @@ public class DataDisplay extends AppCompatActivity {
     View div;
     TextView ecu_status;
     TextView server_status;
-    Button action_reconnect;
-    protected Button save_button;
-    private Button logout_button;
     private static final String TAG = "DataDisplay";
     SharedPreferencesHelper sharedPreferencesHelper;
 
@@ -76,65 +75,37 @@ public class DataDisplay extends AppCompatActivity {
     private Integer rpm = 0;
 
 
+    private boolean activity_running = true;
+
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_display);
 
         Intent intent = getIntent();
         is_admin = intent.getBooleanExtra("admin", false);
-        final Intent intent2=new Intent(this,MainActivity.class);
 
-        save_button = findViewById(R.id.save_button);
         username = intent.getStringExtra("username");
 
-        logout_button=findViewById(R.id.logout_button);
-        access_layout=findViewById(R.id.acess_layout);
-        fuel_button=findViewById(R.id.fuel_button);
-        start_engine_button=findViewById(R.id.start_engine_button);
-        sharedPreferencesHelper=new SharedPreferencesHelper(this);
-        if(!is_admin)
-        {
-            save_button.setVisibility(View.GONE);
+        access_layout = findViewById(R.id.acess_layout);
+        fuel_button = findViewById(R.id.fuel_button);
+        start_engine_button = findViewById(R.id.start_engine_button);
+
+
+        sharedPreferencesHelper = new SharedPreferencesHelper(this);
+
+        if (!is_admin) {
             fuel_button.setVisibility(View.GONE);
             start_engine_button.setVisibility(View.GONE);
-            logout_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    m_disconnect();
-                    startActivity(intent2);
-                }
-            });
-        }
-        else
-        {   logout_button.setVisibility(View.GONE);
+        } else {
             access_layout.setVisibility(View.GONE);
-
         }
-        save_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                sharedPreferencesHelper.saveSessionName("SESSION 1");
-
-                sharedPreferencesHelper.saveSessionUsers("NO USERS");
-                if (dataRed.isEmpty())
-                    sharedPreferencesHelper.saveSessionError("NO WARNINGS GENERATED!!");
-                else
-                    sharedPreferencesHelper.saveSessionError(dataRed.toString());
-                Toast.makeText(getBaseContext(),"SAVED",Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        TextView label_username = findViewById(R.id.label_username);
-        label_username.setText(username);
 
         reconnect = new Dialog(this);
 
-        connection_progressBar=findViewById(R.id.connection_progressBar);
+        connection_progressBar = findViewById(R.id.connection_progressBar);
 
 
         ecu_status = findViewById(R.id.ecu_stat);
@@ -144,8 +115,6 @@ public class DataDisplay extends AppCompatActivity {
         server_status = findViewById(R.id.server_stat);
         server_status.setText("Disconnected");
         server_status.setTextColor(Color.RED);
-
-        action_reconnect = findViewById(R.id.action_reconnect);
 
         fields.add((TextView) findViewById(R.id.data_rpm));
         fields.add((TextView) findViewById(R.id.data_temp_o));
@@ -161,7 +130,7 @@ public class DataDisplay extends AppCompatActivity {
         fields_nc_labels.add((TextView) findViewById(R.id.label_launch));
 
 
-        for(int i=0; i<fields.size(); i++){
+        for (int i = 0; i < fields.size(); i++) {
             fields.get(i).setText("0");
         }
 
@@ -185,8 +154,8 @@ public class DataDisplay extends AppCompatActivity {
         start_engine_button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if((event.getAction() == MotionEvent.ACTION_UP ||
-                        event.getAction() == MotionEvent.ACTION_CANCEL ) && clicked[0]){
+                if ((event.getAction() == MotionEvent.ACTION_UP ||
+                        event.getAction() == MotionEvent.ACTION_CANCEL) && clicked[0]) {
 
                     //Toast.makeText(getBaseContext(),"STOP ENGINE",Toast.LENGTH_SHORT).show();
                     m_publish_engine(false);
@@ -196,6 +165,7 @@ public class DataDisplay extends AppCompatActivity {
             }
         });
 
+        // handle starting/stopping the fuel pump
         final boolean[] pump_status = {false};
         fuel_button.setText("Turn On");
         fuel_button.setOnLongClickListener(new View.OnLongClickListener() {
@@ -210,32 +180,32 @@ public class DataDisplay extends AppCompatActivity {
             }
         });
 
-
         m_connect(findViewById(android.R.id.content));
     }
-    private void m_disconnect()
-    {
-        String topic ="adduser/"+username;
-        try {
-            client.publish(topic, new byte[]{}, 0, true);
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        activity_running = true;
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        activity_running = false;
+    }
+
+
     //Connect to the server
-    public void m_connect(View v)
-    {
+    public void m_connect(View v) {
         connection_progressBar.setVisibility(View.VISIBLE);
-        action_reconnect.setVisibility(View.GONE);
 
-
-        if(client != null && client.isConnected()){
+        if (client != null && client.isConnected()) {
             return;
         }
 
         String clientId = MqttClient.generateClientId();
-        client = new MqttAndroidClient(this.getApplicationContext(),MQTTHOST,
+        client = new MqttAndroidClient(this.getApplicationContext(), MQTTHOST,
                 clientId);
 
         mqttThread = new Thread(new Runnable() {
@@ -245,11 +215,9 @@ public class DataDisplay extends AppCompatActivity {
                 if (client != null && !client.isConnected()) {
                     try {
                         connection = client.connect();
-                        connection.setActionCallback(new IMqttActionListener()
-                        {
+                        connection.setActionCallback(new IMqttActionListener() {
                             @Override
-                            public void onSuccess(IMqttToken asyncActionToken)
-                            {
+                            public void onSuccess(IMqttToken asyncActionToken) {
                                 // We are connected
                                 Log.d("In MQTT_Connection", "onSuccess");
                                 connection_progressBar.setVisibility(View.GONE);
@@ -258,9 +226,7 @@ public class DataDisplay extends AppCompatActivity {
                                 server_status = findViewById(R.id.server_stat);
                                 server_status.setText("Connected");
                                 server_status.setTextColor(Color.GREEN);
-                                action_reconnect.setVisibility(View.GONE);
-                                if(!is_admin)
-                                {
+                                if (!is_admin) {
                                     m_publish_add();
                                 }
 
@@ -272,7 +238,7 @@ public class DataDisplay extends AppCompatActivity {
                                 // Something went wrong e.g. connection timeout or firewall problems
                                 Log.d("In MQTT_Connection", "onFailure");
                                 connection_progressBar.setVisibility(View.GONE);
-                                Show_reconnect_popup();
+                                show_reconnect_popup();
 
                             }
                         });
@@ -285,62 +251,62 @@ public class DataDisplay extends AppCompatActivity {
 
         mqttThread.start();
     }
-    public void m_publish_add()
-    {
 
-        String topic ="access/request";
+
+    public void m_publish_add() {
+
+        String topic = "access/request";
         JSONObject msg;
         msg = new JSONObject();
 
-        try{
-            msg.put("username",username);
-        }catch(JSONException e)
-        {
+        try {
+            msg.put("username", username);
+        } catch (JSONException e) {
             throw new RuntimeException(e);
         }
 
         try {
-            client.publish(topic, msg.toString().getBytes(),0,true);
+            client.publish(topic, msg.toString().getBytes(), 0, true);
         } catch (MqttException e) {
             e.printStackTrace();
         }
     }
 
 
-    public void m_publish_engine(boolean state){
-        String topic ="control/engine";
+    public void m_publish_engine(boolean state) {
+        String topic = "control/engine";
         JSONObject msg;
         msg = new JSONObject();
         int val = state ? 1 : 0;
 
-        try{
-            msg.put("crank",val);
-        }catch(JSONException e)
-        {
+        try {
+            msg.put("crank", val);
+        } catch (JSONException e) {
             throw new RuntimeException(e);
         }
 
         try {
-            client.publish(topic, msg.toString().getBytes(),0,true);
+            client.publish(topic, msg.toString().getBytes(), 0, true);
         } catch (MqttException e) {
             e.printStackTrace();
         }
     }
-    public void m_publish_fuel(boolean state){
-        String topic ="control/fuel_pump";
+
+
+    public void m_publish_fuel(boolean state) {
+        String topic = "control/fuel_pump";
         JSONObject msg;
         msg = new JSONObject();
         int val = state ? 1 : 0;
 
-        try{
-            msg.put("pump",val);
-        }catch(JSONException e)
-        {
+        try {
+            msg.put("pump", val);
+        } catch (JSONException e) {
             throw new RuntimeException(e);
         }
 
         try {
-            client.publish(topic, msg.toString().getBytes(),0,true);
+            client.publish(topic, msg.toString().getBytes(), 0, true);
         } catch (MqttException e) {
             e.printStackTrace();
         }
@@ -348,21 +314,19 @@ public class DataDisplay extends AppCompatActivity {
 
 
     // this method subscribes to the topic passed in the parameter
-    private void subscription_handler(final String topic){
+    private void subscription_handler(final String topic) {
         try {
             IMqttToken subToken = client.subscribe(topic, 0);
-            subToken.setActionCallback(new IMqttActionListener()
-            {
+            subToken.setActionCallback(new IMqttActionListener() {
                 @Override
-                public void onSuccess(IMqttToken asyncActionToken)
-                {
-                    Toast.makeText(DataDisplay.this,"Subscribed to "+topic,Toast.LENGTH_SHORT).show();
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    Toast.makeText(DataDisplay.this, "Subscribed to " + topic, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken,
                                       Throwable exception) {
-                    Toast.makeText(DataDisplay.this,"Subscription to "+topic+" failed",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DataDisplay.this, "Subscription to " + topic + " failed", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (MqttException e) {
@@ -371,7 +335,7 @@ public class DataDisplay extends AppCompatActivity {
     }
 
 
-    private void m_subscribe(){
+    private void m_subscribe() {
         subscription_handler("status/module");
         subscription_handler("sensors/critical");
         subscription_handler("sensors/non_critical");
@@ -380,16 +344,15 @@ public class DataDisplay extends AppCompatActivity {
         client.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {
-                Toast.makeText(DataDisplay.this,"Lost Connection to MQTT broker",Toast.LENGTH_SHORT).show();
+                Toast.makeText(DataDisplay.this, "Lost Connection to MQTT broker", Toast.LENGTH_SHORT).show();
                 server_status = findViewById(R.id.server_stat);
                 server_status.setText("Disconnected");
                 server_status.setTextColor(Color.RED);
-                action_reconnect.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws JSONException {
-                final JSONObject msg = new JSONObject(new String (message.getPayload()));
+                final JSONObject msg = new JSONObject(new String(message.getPayload()));
 
                 switch (topic) {
                     case "sensors/critical":
@@ -400,7 +363,7 @@ public class DataDisplay extends AppCompatActivity {
                                 try {
                                     data.clear();
                                     data.add(msg.getInt("rpm"));
-                                    rpm=data.get(0);
+                                    rpm = data.get(0);
                                     String op = rpm > 2000 ? "Stop" : "Start";
                                     start_engine_button.setText(op);
                                     data.add(msg.getInt("oil_temp"));
@@ -410,39 +373,39 @@ public class DataDisplay extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
 
-                                for(int i=0; i<data.size(); i++){
+                                for (int i = 0; i < data.size(); i++) {
                                     fields.get(i).setText(data.get(i).toString());
                                 }
 
-                                if(data.get(0) > 12500){
+                                if (data.get(0) > 12500) {
                                     fields.get(0).setTextColor(Color.RED);
-                                    dataRed.add("rpm: "+ data.get(0));
+                                    dataRed.add("rpm: " + data.get(0));
                                 } else {
                                     fields.get(0).setTextColor(Color.BLACK);
                                 }
 
-                                if(data.get(1) < 75){
+                                if (data.get(1) < 75) {
                                     fields.get(1).setTextColor(Color.BLUE);
-                                } else if(data.get(2) > 120) {
+                                } else if (data.get(2) > 120) {
                                     fields.get(1).setTextColor(Color.RED);
-                                    dataRed.add("oil_temp: "+ data.get(1));
+                                    dataRed.add("oil_temp: " + data.get(1));
                                 } else {
                                     fields.get(1).setTextColor(Color.GREEN);
                                 }
 
-                                if(data.get(2) < 75){
+                                if (data.get(2) < 75) {
                                     fields.get(2).setTextColor(Color.BLUE);
-                                } else if(data.get(2) > 110) {
+                                } else if (data.get(2) > 110) {
                                     fields.get(2).setTextColor(Color.RED);
-                                    dataRed.add("coolant_temp: "+ data.get(2));
+                                    dataRed.add("coolant_temp: " + data.get(2));
 
                                 } else {
                                     fields.get(2).setTextColor(Color.GREEN);
                                 }
 
-                                if(data.get(3) < 390 || data.get(1) > 430){
+                                if (data.get(3) < 390 || data.get(1) > 430) {
                                     fields.get(3).setTextColor(Color.RED);
-                                    dataRed.add("fuel_pressure: "+ data.get(3));
+                                    dataRed.add("fuel_pressure: " + data.get(3));
                                 } else {
                                     fields.get(3).setTextColor(Color.GREEN);
                                 }
@@ -451,7 +414,7 @@ public class DataDisplay extends AppCompatActivity {
 
                         break;
                     case "sensors/non_critical":
-                        if(!non_critical) return;
+                        if (!non_critical) return;
                         try {
                             data_nc.clear();
                             data_nc.add(msg.getInt("voltage"));
@@ -477,13 +440,12 @@ public class DataDisplay extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
 
-                                if(!conn_status)
-                                {
-                                    Toast.makeText(DataDisplay.this,"Module Lost Connection to ECU",Toast.LENGTH_SHORT).show();
+                                if (!conn_status) {
+                                    Toast.makeText(DataDisplay.this, "Module Lost Connection to ECU", Toast.LENGTH_SHORT).show();
                                     ecu_status.setText("Disconnected");
                                     ecu_status.setTextColor(Color.RED);
 
-                                    for(int i=0; i<fields.size(); i++){
+                                    for (int i = 0; i < fields.size(); i++) {
                                         fields.get(i).setText("0");
                                     }
 
@@ -498,10 +460,10 @@ public class DataDisplay extends AppCompatActivity {
                         break;
                     case "access/request":
                         String connected_user = " ";
-                        String access=" ";
+                        String access = " ";
                         try {
                             connected_user = msg.getString("username");
-                            access=msg.getString("request");
+                            access = msg.getString("request");
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -521,12 +483,11 @@ public class DataDisplay extends AppCompatActivity {
                          }
                             break;
 
-
                     default:
-
                         break;
                 }
             }
+
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {
 
@@ -535,11 +496,13 @@ public class DataDisplay extends AppCompatActivity {
     }
 
     //opens a popup page where the user can connect to the server again
-    private void Show_reconnect_popup()
-    {
+    private void show_reconnect_popup() {
+        if (!activity_running) {
+            return;
+        }
         reconnect.setContentView(R.layout.popup_failed_connection);
-        closeReconnect= reconnect.findViewById(R.id.closeReconnect);
-        reconnect_button=reconnect.findViewById(R.id.reconnect_button);
+        closeReconnect = reconnect.findViewById(R.id.closeReconnect);
+        reconnect_button = reconnect.findViewById(R.id.reconnect_button);
         closeReconnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -557,14 +520,14 @@ public class DataDisplay extends AppCompatActivity {
         reconnect.show();
     }
 
-    public void btn_data(View v){
+    public void toggle_non_critical() {
         non_critical = !non_critical;
-        if(non_critical) {
+        if (non_critical) {
             for (int i = 4; i < fields.size(); i++) {
                 fields.get(i).setVisibility(View.VISIBLE);
             }
 
-            for(int i=0; i < fields_nc_labels.size(); i++){
+            for (int i = 0; i < fields_nc_labels.size(); i++) {
                 fields_nc_labels.get(i).setVisibility(View.VISIBLE);
             }
             div.setVisibility(View.VISIBLE);
@@ -573,11 +536,49 @@ public class DataDisplay extends AppCompatActivity {
                 fields.get(i).setVisibility(View.GONE);
             }
 
-            for(int i=0; i < fields_nc_labels.size(); i++){
+            for (int i = 0; i < fields_nc_labels.size(); i++) {
                 fields_nc_labels.get(i).setVisibility(View.GONE);
             }
 
             div.setVisibility(View.GONE);
+        }
+    }
+
+    // set up the top bar menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_admin_data, menu);
+        return true;
+    }
+
+    // listen for when the menu option clicks
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.toggle_data:
+                // toggle non-critical data when clicked
+                toggle_non_critical();
+                return true;
+
+            case R.id.save_session:
+                sharedPreferencesHelper.saveSessionName("SESSION 1");
+
+                sharedPreferencesHelper.saveSessionUsers("NO USERS");
+                if (dataRed.isEmpty())
+                    sharedPreferencesHelper.saveSessionError("NO WARNINGS GENERATED!!");
+                else
+                    sharedPreferencesHelper.saveSessionError(dataRed.toString());
+                Toast.makeText(getBaseContext(), "SAVED", Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.reconnect:
+                m_connect(findViewById(android.R.id.content));
+                return true;
+
+            default:
+                // default case, not really used here but apparently it's best practice
+                return super.onOptionsItemSelected(item);
         }
     }
 }

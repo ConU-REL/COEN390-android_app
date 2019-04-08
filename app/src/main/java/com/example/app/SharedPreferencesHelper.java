@@ -19,7 +19,6 @@ public class SharedPreferencesHelper
     {
         SharedPreferences.Editor editor=sharedPreferences.edit();
         editor.putString("User Name",name);
-        //Consider using `apply()` instead; `commit` writes its fields to persistent storage immediately, whereas `apply` will handle it in the background
         editor.commit();
     }
 
@@ -27,21 +26,18 @@ public class SharedPreferencesHelper
     {
         SharedPreferences.Editor editor=sharedPreferences.edit();
         editor.putString("session_name",name);
-        //Consider using `apply()` instead; `commit` writes its fields to persistent storage immediately, whereas `apply` will handle it in the background
         editor.commit();
     }
     public void saveSessionError(String error)
     {
         SharedPreferences.Editor editor=sharedPreferences.edit();
         editor.putString("session_error",error);
-        //Consider using `apply()` instead; `commit` writes its fields to persistent storage immediately, whereas `apply` will handle it in the background
         editor.commit();
     }
     public void saveSessionUsers(String users)
     {
         SharedPreferences.Editor editor=sharedPreferences.edit();
         editor.putString("session_users",users);
-        //Consider using `apply()` instead; `commit` writes its fields to persistent storage immediately, whereas `apply` will handle it in the background
         editor.commit();
     }
     public void saveAccess(String user)
@@ -49,7 +45,6 @@ public class SharedPreferencesHelper
         SharedPreferences.Editor editor=sharedPreferences.edit();
 
         editor.putString("added_user",user);
-        //Consider using `apply()` instead; `commit` writes its fields to persistent storage immediately, whereas `apply` will handle it in the background
         editor.commit();
     }
     public String getSessionName()

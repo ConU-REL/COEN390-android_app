@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">APP</string>
+    <string name="app_name">WACDAQ</string>
     <string name="admin_page">Login as Admin</string>
     <string name="user_page">Login as User</string>
     <string name="welcome_message">\"Welcome Message\"</string>
