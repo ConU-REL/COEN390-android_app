@@ -8,7 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +28,7 @@ public class UserLogin extends AppCompatActivity
     protected EditText user_login_text;
     protected EditText user_id;
     String username;
-
+protected Switch switch2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -35,6 +37,22 @@ public class UserLogin extends AppCompatActivity
         setContentView(R.layout.activity_user_login);
         user_login_text=findViewById(R.id.user_login_text);
         user_id=findViewById(R.id.user_id);
+
+
+        switch2 = findViewById(R.id.switch2);
+
+        switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if(isChecked)
+                {
+                    Intent intent=new Intent(getBaseContext(),AdminLogin.class);
+                    startActivity(intent);
+                }
+            }
+        });
+
     }
     public void goUserDisplay(View view)
     {
