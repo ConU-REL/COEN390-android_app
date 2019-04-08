@@ -6,15 +6,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -77,7 +70,7 @@ public class DataDisplay extends AppCompatActivity {
     // the car properly
     boolean test_mqtt = false;
     String MQTTHOST = test_mqtt ? "tcp://broker.hivemq.com:1883" : "tcp://10.0.22.10:1883";
-    private Integer rpm;
+    private Integer rpm = 0;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -108,8 +101,6 @@ public class DataDisplay extends AppCompatActivity {
                 public void onClick(View v) {
                     m_disconnect();
                     startActivity(intent2);
-
-
                 }
             });
         }
@@ -172,14 +163,16 @@ public class DataDisplay extends AppCompatActivity {
 
         // handle starting/stopping the engine
         final boolean[] clicked = {false};
+        start_engine_button.setText("START");
 
         start_engine_button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
 
-                Toast.makeText(getBaseContext(),"START ENGINE",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getBaseContext(),"START ENGINE",Toast.LENGTH_SHORT).show();
                 m_publish_engine(true);
                 clicked[0] = true;
+
                 return false;
             }
         });
@@ -189,45 +182,29 @@ public class DataDisplay extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 if((event.getAction() == MotionEvent.ACTION_UP ||
                         event.getAction() == MotionEvent.ACTION_CANCEL ) && clicked[0]){
-                    if(rpm>2000)
-                    {
-                        start_engine_button.setText("STOP");
-                    }
-                    else
-                    {
-                        start_engine_button.setText("START");
-                    }
-                    Toast.makeText(getBaseContext(),"STOP ENGINE",Toast.LENGTH_SHORT).show();
+
+                    //Toast.makeText(getBaseContext(),"STOP ENGINE",Toast.LENGTH_SHORT).show();
                     m_publish_engine(false);
                     clicked[0] = false;
                 }
                 return false;
             }
         });
+
+        final boolean[] pump_status = {false};
+        fuel_button.setText("Turn On");
         fuel_button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-
-                Toast.makeText(getBaseContext(),"START FUEL PUMP",Toast.LENGTH_SHORT).show();
-                m_publish_fuel(true);
-                clicked[0] = true;
+                pump_status[0] = !pump_status[0];
+                m_publish_fuel(pump_status[0]);
+                String btn_text = pump_status[0] ? "Turn Off" : "Turn On";
+                fuel_button.setText(btn_text);
+                //Toast.makeText(getBaseContext(),"FUEL PUMP TOGGLE",Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
 
-        fuel_button.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if((event.getAction() == MotionEvent.ACTION_UP ||
-                        event.getAction() == MotionEvent.ACTION_CANCEL ) && clicked[0]){
-
-                    Toast.makeText(getBaseContext(),"STOP FUEL PUMP",Toast.LENGTH_SHORT).show();
-                    m_publish_fuel(false);
-                    clicked[0] = false;
-                }
-                return false;
-            }
-        });
 
         m_connect(findViewById(android.R.id.content));
     }
@@ -271,7 +248,7 @@ public class DataDisplay extends AppCompatActivity {
                                 // We are connected
                                 Log.d("In MQTT_Connection", "onSuccess");
                                 connection_progressBar.setVisibility(View.GONE);
-                                Toast.makeText(DataDisplay.this,"Connected to server",Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(DataDisplay.this,"Connected to server",Toast.LENGTH_SHORT).show();
 
                                 server_status = findViewById(R.id.server_stat);
                                 server_status.setText("Connected");
@@ -364,7 +341,7 @@ public class DataDisplay extends AppCompatActivity {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken)
                 {
-                    Toast.makeText(DataDisplay.this,"Subscribed to "+topic,Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(DataDisplay.this,"Subscribed to "+topic,Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -403,9 +380,13 @@ public class DataDisplay extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                dataRed.clear();
                                 try {
                                     data.clear();
                                     data.add(msg.getInt("rpm"));
+                                    rpm=data.get(0);
+                                    String op = rpm > 2000 ? "Stop" : "Start";
+                                    start_engine_button.setText(op);
                                     data.add(msg.getInt("oil_temp"));
                                     data.add(msg.getInt("coolant_temp"));
                                     data.add(msg.getInt("fuel_pressure"));
@@ -420,7 +401,6 @@ public class DataDisplay extends AppCompatActivity {
                                 if(data.get(0) > 12500){
                                     fields.get(0).setTextColor(Color.RED);
                                     dataRed.add("rpm: "+ data.get(0));
-                                    rpm=data.get(0);
                                 } else {
                                     fields.get(0).setTextColor(Color.BLACK);
                                 }
@@ -492,7 +472,7 @@ public class DataDisplay extends AppCompatActivity {
                                     }
 
                                 } else {
-                                    Toast.makeText(DataDisplay.this,"Module Connected to ECU",Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(DataDisplay.this,"Module Connected to ECU",Toast.LENGTH_SHORT).show();
                                     ecu_status.setText("Connected");
                                     ecu_status.setTextColor(Color.GREEN);
                                 }

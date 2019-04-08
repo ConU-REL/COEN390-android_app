@@ -290,32 +290,40 @@
             android:layout_marginTop="100dp"
             android:layout_marginEnd="29dp"
             android:layout_marginRight="29dp"
-            android:text="START"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/connection_progressBar"
-           />
+            tools:text="START" />
 
-    <Button
-        android:id="@+id/fuel_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginBottom="32dp"
-        android:text="FUEL"
-        app:layout_constraintBottom_toTopOf="@+id/save_button"
-        app:layout_constraintEnd_toEndOf="parent" />
-    <!--
-
-        <android.support.design.widget.NavigationView
-
-            android:id="@+id/nav_view"
+        <Button
+            android:id="@+id/fuel_button"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            app:headerLayout="@layout/menu_header"
-            app:menu="@menu/drawermenu">
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toTopOf="@+id/save_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Fuel Pump" />
 
-        </android.support.design.widget.NavigationView>
-        -->
+        <TextView
+            android:id="@+id/label_fuel_pump"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:text="Toggle Fuel Pump"
+            app:layout_constraintBottom_toTopOf="@+id/fuel_button"
+            app:layout_constraintEnd_toEndOf="@+id/fuel_button"
+            app:layout_constraintStart_toStartOf="@+id/fuel_button" />
+        <!--
+
+            <android.support.design.widget.NavigationView
+
+                android:id="@+id/nav_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                app:headerLayout="@layout/menu_header"
+                app:menu="@menu/drawermenu">
+
+            </android.support.design.widget.NavigationView>
+            -->
 </android.support.constraint.ConstraintLayout>
