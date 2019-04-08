@@ -3,6 +3,8 @@ package com.example.app;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
+
 public class SharedPreferencesHelper
 {
     private SharedPreferences sharedPreferences;
@@ -42,6 +44,14 @@ public class SharedPreferencesHelper
         //Consider using `apply()` instead; `commit` writes its fields to persistent storage immediately, whereas `apply` will handle it in the background
         editor.commit();
     }
+    public void saveAccess(String user)
+    {
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+
+        editor.putString("added_user",user);
+        //Consider using `apply()` instead; `commit` writes its fields to persistent storage immediately, whereas `apply` will handle it in the background
+        editor.commit();
+    }
     public String getSessionName()
     {
         return sharedPreferences.getString("session_name",null );
@@ -55,6 +65,10 @@ public class SharedPreferencesHelper
         return sharedPreferences.getString("session_error",null );
     }
 
+    public String getAccess()
+    {
+        return sharedPreferences.getString("added_user",null );
+    }
 
     public String getUserName()
     {

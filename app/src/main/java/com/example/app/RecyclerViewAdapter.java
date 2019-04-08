@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,9 +17,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private static final String TAG = "RecyclerViewAdapter";
 
 
-    private ArrayList<String> adddataInputsListText=new ArrayList<>();
+    private ArrayList<String> adddataInputsListText;
+    SharedPreferencesHelper sharedPreferencesHelper;
     private Context context;
-
     public RecyclerViewAdapter(ArrayList<String> adddataInputsListText, Context context) {
         this.adddataInputsListText = adddataInputsListText;
         this.context = context;
@@ -29,18 +30,27 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public ViewHolder onCreateViewHolder(ViewGroup parent, int i) {
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_listitem,parent,false);
         ViewHolder holder=new ViewHolder(view);
+
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
         viewHolder.image_name.setText(adddataInputsListText.get(i));
+
         viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Toast.makeText(context,adddataInputsListText.get(i),Toast.LENGTH_SHORT).show();
+
             }
         });
+        if(viewHolder.checkBox.isChecked())
+        {
+            sharedPreferencesHelper.saveAccess(adddataInputsListText.get(i).toString());
+        }
+
 
     }
 
@@ -52,10 +62,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView image_name;
         RelativeLayout parentLayout;
+        CheckBox checkBox;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             image_name=itemView.findViewById(R.id.image_name);
             parentLayout=itemView.findViewById(R.id.parent_layout);
+            checkBox=itemView.findViewById(R.id.checkbox);
+
         }
     }
 }

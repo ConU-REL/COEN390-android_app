@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -39,7 +40,7 @@ public class AdminUsersDisplay extends AppCompatActivity
     List<String> UserInputsList;
     protected Button refress_button;
     MqttAndroidClient client;
-
+    SharedPreferencesHelper sharedPreferencesHelper;
     private ArrayList<String> adddataInputsListText;
 
     @Override
@@ -51,10 +52,7 @@ public class AdminUsersDisplay extends AppCompatActivity
         refress_button=findViewById(R.id.refresh_button);
         checkBox=findViewById(R.id.checkbox);
 
-        if(checkBox.isChecked())
-        {
 
-        }
         refress_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -65,6 +63,7 @@ public class AdminUsersDisplay extends AppCompatActivity
 
             }
         });
+        m_connect();
 
     }
 
@@ -119,7 +118,7 @@ public class AdminUsersDisplay extends AppCompatActivity
 
     public void m_subscribe_add()
     {
-        String topic ="adduser/+";
+        String topic ="access/request";
         int qos = 1;
         try {
             IMqttToken subToken = client.subscribe(topic, qos);
@@ -152,10 +151,17 @@ public class AdminUsersDisplay extends AppCompatActivity
             }
 
             @Override
-            public void messageArrived(String topic, MqttMessage message)
-            {
-                UserInputsList.add(new String (message.getPayload()));
-                if(!new String (message.getPayload()).isEmpty())
+            public void messageArrived(String topic, MqttMessage message)throws JSONException {
+                final JSONObject msg = new JSONObject(new String (message.getPayload()));
+                String connected_user = " ";
+                try {
+                    connected_user = msg.getString("username");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if(!connected_user.isEmpty())
+                UserInputsList.add(connected_user);
+
                 addloadListView();
             }
 
@@ -168,26 +174,6 @@ public class AdminUsersDisplay extends AppCompatActivity
 
 
     }
-    public void m_publish_access(boolean state,String username){
-        String topic ="data/access"+username;
-        JSONObject msg;
-        msg = new JSONObject();
-        int val = state ? 1 : 0;
-
-        try{
-            msg.put("access",val);
-        }catch(JSONException e)
-        {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            client.publish(topic, msg.toString().getBytes(),0,true);
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void addloadListView()
     {
 
@@ -202,6 +188,33 @@ public class AdminUsersDisplay extends AppCompatActivity
        }
         loadListView();
 
+    }
+    public void m_publish_access(String username)
+    {
+
+        String topic ="access/request";
+        JSONObject msg;
+        msg = new JSONObject();
+
+        try{
+            msg.put("username","jack");
+            msg.put("request","granted");
+        }catch(JSONException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            client.publish(topic, msg.toString().getBytes(),0,true);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+    public void addUser(View view)
+    {
+
+        m_publish_access("sam");
+        Toast.makeText(getBaseContext(),"Access granted to"+ sharedPreferencesHelper.getAccess(),Toast.LENGTH_SHORT).show();
     }
 
 }

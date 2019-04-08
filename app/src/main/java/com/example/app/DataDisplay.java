@@ -288,10 +288,19 @@ public class DataDisplay extends AppCompatActivity {
     public void m_publish_add()
     {
 
-        String topic ="adduser/"+username;
-        int qos=1;
+        String topic ="access/request";
+        JSONObject msg;
+        msg = new JSONObject();
+
+        try{
+            msg.put("username",username);
+        }catch(JSONException e)
+        {
+            throw new RuntimeException(e);
+        }
+
         try {
-            client.publish(topic, username.getBytes(),qos,true);
+            client.publish(topic, msg.toString().getBytes(),0,true);
         } catch (MqttException e) {
             e.printStackTrace();
         }
@@ -366,7 +375,7 @@ public class DataDisplay extends AppCompatActivity {
         subscription_handler("status/module");
         subscription_handler("sensors/critical");
         subscription_handler("sensors/non_critical");
-        subscription_handler("data/access/"+username);
+        subscription_handler("access/request");
 
         client.setCallback(new MqttCallback() {
             @Override
@@ -381,26 +390,7 @@ public class DataDisplay extends AppCompatActivity {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws JSONException {
                 final JSONObject msg = new JSONObject(new String (message.getPayload()));
-                if (topic.equals("data/access/"+username))
-                {  if(!is_admin)
-                {
-                    boolean access = false;
-                    try {
-                        access= Integer.parseInt(msg.getString("access")) == 1;
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
 
-                    if (access)
-                    {
-                        Toast.makeText(DataDisplay.this, "Waiting access....", Toast.LENGTH_SHORT).show();
-
-                          access_layout.setVisibility(View.GONE);
-                    }
-
-                }
-
-                }
                 switch (topic) {
                     case "sensors/critical":
                         runOnUiThread(new Runnable() {
@@ -506,6 +496,24 @@ public class DataDisplay extends AppCompatActivity {
                         });
 
                         break;
+                    case "access/request":
+                        String connected_user = " ";
+                        String access=" ";
+                        try {
+                            connected_user = msg.getString("username");
+                            access=msg.getString("request");
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                         if(!is_admin) {
+                             Toast.makeText(DataDisplay.this, connected_user + " is waiting for access", Toast.LENGTH_SHORT).show();
+                             if(connected_user.equals(username) && access.equals("granted"))
+                             {
+                                 access_layout.setVisibility(View.GONE);
+                             }
+                         }
+                            break;
 
 
                     default:
