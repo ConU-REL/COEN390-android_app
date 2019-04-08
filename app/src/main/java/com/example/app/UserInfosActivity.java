@@ -27,6 +27,8 @@ public class UserInfosActivity extends AppCompatActivity
     User user;
     List<User> userList;
     int position;
+    boolean isDeleted;
+    boolean isUpdated;
 
 
 
@@ -84,6 +86,10 @@ public class UserInfosActivity extends AppCompatActivity
             {
                 Log.d(TAG,"onClick:Cancel Called:");
                 cancelMethod();
+                isUpdated==databaseHelper.updateRole(user);
+                isUpdated==false;
+                isDeleted==deleteUserbyID(userID);
+                isDeleted==false;
                 Intent intent=new Intent(UserInfosActivity.this,ManageUsersActivity.class);
                 startActivity(intent);
 
