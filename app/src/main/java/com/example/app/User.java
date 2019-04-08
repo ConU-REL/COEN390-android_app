@@ -16,23 +16,11 @@ public class User
         this.userRole=userRole;
     }
 
-    public User(String userName, Integer userID,long sessionID)
+    public User(String userName, String userRole, long sessionID)
     {
         this.userName = userName;
-        this.userID = userID;
+        this.userRole = userRole;
         this.sessionID = sessionID;
-    }
-
-    public User(String userName,Integer userID)
-    {
-        this.userName=userName;
-        this.userID=userID;
-    }
-
-    public User(String userName,String userRole)
-    {
-        this.userRole=userRole;
-        this.userName=userName;
     }
 
     public String getUserName()
