@@ -18,17 +18,8 @@ public class SavedUsersActivity extends AppCompatActivity
     protected ListView usersListView;
     protected FloatingActionButton addUserFloatingButton;
     SharedPreferencesHelper sharedPreferencesHelper;
-
-
-
-
-
     long sessionID=-1;
-    String userID;
-
-
-
-
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,19 +40,11 @@ public class SavedUsersActivity extends AppCompatActivity
         String role=sharedPreferencesHelper.getUserRole();
         final Bundle bundle=getIntent().getExtras();
         //Intent intent=getIntent();
-        userID=sharedPreferencesHelper.getUserID();
+        
+       db.insertUsers(new User(name,role,sessionID));
+        
 
-
-        if (userID != null) {
-            db.insertUsers(new User(name,role,sessionID));
-        }
-
-
-
-
-        loadListView(sessionID);
-
-
+       loadListView(sessionID);
 
         addUserFloatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,10 +56,9 @@ public class SavedUsersActivity extends AppCompatActivity
             }
         });
 
-
-
-
     }
+    
+    
 
     protected void loadListView(long sessionID)
     {
@@ -87,8 +69,8 @@ public class SavedUsersActivity extends AppCompatActivity
         for (int i=0;i<users.size();i++)
         {
             String temp= " ";
-            temp+=users.get(i).getUserName() + "\n";
-            temp+=users.get(i).getUserRole();
+            temp+="Username:" + users.get(i).getUserName() + "\n";
+            temp+="Role:" + users.get(i).getUserRole();
 
             usersListText.add(temp);
         }
