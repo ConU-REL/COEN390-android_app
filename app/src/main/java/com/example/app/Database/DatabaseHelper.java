@@ -22,7 +22,7 @@ import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper 
 {
-private static final String TAG = "DatabaseHelper";
+    private static final String TAG = "DatabaseHelper";
 
     // All Static variables
     private static final int DATABASE_VERSION = 1;
@@ -61,10 +61,10 @@ private static final String TAG = "DatabaseHelper";
 
 
         String CREATE_USERS_TABLE = "CREATE TABLE " + Config.USERS_TABLE + "("
-                + Config.COLUMN_USERS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + Config.COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + Config.COLUMN_USER_NAMES + " TEXT NOT NULL, "
-                + Config.COLUMN_SESSION_ID + " TEXT, "
-                + Config.COLUMN_USERS_ROLES + " TEXT "
+                + Config.COLUMN_USER_ROLES + " TEXT NOT NULL, "
+                + Config.COLUMN_SESSION_ID + " TEXT "
                 + ")";
 
         Log.d(TAG, "Table create SQL: " + CREATE_USERS_TABLE);
@@ -209,8 +209,9 @@ private static final String TAG = "DatabaseHelper";
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(Config.COLUMN_USER_NAMES, users.getUserName());
+        contentValues.put(Config.COLUMN_USER_ROLES,users.getUserRole());
         contentValues.put(Config.COLUMN_SESSION_ID,users.getSessionID());
-        contentValues.put(Config.COLUMN_USERS_ROLES,users.getUserRole());
+
 
 
 
@@ -245,14 +246,14 @@ private static final String TAG = "DatabaseHelper";
                 if (cursor.moveToFirst()) {
                     List<User> usersList = new ArrayList<>();
                     do {
-                        int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USERS_ID));
+                        int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USER_ID));
                         String name = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_NAMES));
                         long session_id=cursor.getInt(cursor.getColumnIndex(Config.COLUMN_SESSION_ID));
-                        String role=cursor.getString(cursor.getColumnIndex(Config.COLUMN_USERS_ROLES));
+                        String role=cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_ROLES));
 
 
 
-                        usersList.add(new User(name,id,session_id,role));
+                        usersList.add(new User(name,role,id,session_id));
                     } while (cursor.moveToNext());
 
                     return usersList;
@@ -269,40 +270,6 @@ private static final String TAG = "DatabaseHelper";
         return Collections.emptyList();
     }
 
-    public List<User> getListUsersByID(long sessionID)
-    {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-
-        try {
-            cursor = db.query(Config.USERS_TABLE, null, Config.COLUMN_SESSION_ID + "= ?", new String[] {String.valueOf(sessionID)}, null, null, null);
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-                    List<User> users = new ArrayList<>();
-                    do {
-                        int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USERS_ID));
-                        String name = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_NAMES));
-
-                        users.add(new User(name,id,sessionID));
-                    } while (cursor.moveToNext());
-
-                    return users;
-                }
-
-            }
-        } catch (SQLException e) {
-            Log.d(TAG, "EXCEPTION:" + e);
-            Toast.makeText(context, "Operation Failed!: " + e, Toast.LENGTH_LONG).show();
-        } finally {
-            if (cursor != null)
-                cursor.close();
-
-            db.close();
-        }
-
-
-        return Collections.emptyList();
-    }
 
     public User searchUserByID(Integer userID)
     {
@@ -310,15 +277,16 @@ private static final String TAG = "DatabaseHelper";
         Cursor cursor = null;
 
         try {
-            cursor = db.query(Config.USERS_TABLE, null, Config.COLUMN_USERS_ID + "= ?", new String[]{String.valueOf(userID)}, null, null, null);
+            cursor = db.query(Config.USERS_TABLE, null, Config.COLUMN_USER_ID + "= ?", new String[]{String.valueOf(userID)}, null, null, null);
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
 
-                    int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USERS_ID));
                     String name = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_NAMES));
+                    String role = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_ROLES));
+                    long session_id=cursor.getInt(cursor.getColumnIndex(Config.COLUMN_SESSION_ID));
 
 
-                    return new User(name,id);
+                    return new User(name,role,session_id);
                 }
             }
 
@@ -334,6 +302,62 @@ private static final String TAG = "DatabaseHelper";
         }
 
         return null;
+
+    }
+
+    public void deleteUserbyID(int userID)
+    {SQLiteDatabase db=this.getWritableDatabase();
+        try
+        {
+            db.delete(Config.USERS_TABLE, Config.COLUMN_USER_ID + " = ? ", new String[]{String.valueOf(userID)});
+        }
+
+        catch (SQLiteException e)
+        {
+            Log.d(TAG,"Exception: " + e.getMessage());
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        finally
+        {
+            db.close();
+        }
+
+    }
+
+ public boolean updateRole(User users)
+    {
+        SQLiteDatabase db=this.getWritableDatabase();
+
+        try
+        {
+            ContentValues contentValues=new ContentValues();
+            contentValues.put(Config.COLUMN_USER_ROLES,users.getUserRole());
+            contentValues.put(Config.COLUMN_USER_NAMES, users.getUserName());
+            contentValues.put(Config.COLUMN_SESSION_ID,users.getSessionID());
+
+            db.update(Config.USERS_TABLE, contentValues,
+                    Config.COLUMN_USER_ROLES + " = ? ",
+                    new String[] {users.getUserRole()});
+
+
+
+            //db.update(Config.USERS_TABLE,contentValues,Config.COLUMN_USER_ROLES + " =?",new String[]{users.getUserRole()});
+        }
+
+        catch (SQLiteException e)
+        {
+            Log.d(TAG,"Exception: " + e.getMessage());
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        finally
+        {
+            db.close();
+        }
+
+        return true;
+
 
     }
 
