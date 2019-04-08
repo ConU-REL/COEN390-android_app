@@ -38,6 +38,7 @@ public class DataDisplay extends AppCompatActivity {
     protected Button start_engine_button;
     protected Button fuel_button;
     protected LinearLayout access_layout;
+    protected Button request_access;
 
 
     MqttAndroidClient client;
@@ -90,6 +91,7 @@ public class DataDisplay extends AppCompatActivity {
         access_layout = findViewById(R.id.acess_layout);
         fuel_button = findViewById(R.id.fuel_button);
         start_engine_button = findViewById(R.id.start_engine_button);
+        request_access=findViewById(R.id.request_access);
 
 
         sharedPreferencesHelper = new SharedPreferencesHelper(this);
@@ -106,6 +108,8 @@ public class DataDisplay extends AppCompatActivity {
             label_fuel_pump.setVisibility(View.GONE);
 
             invalidateOptionsMenu();
+            access_layout.setVisibility(View.VISIBLE);
+            request_access.setVisibility(View.GONE);
         } else {
             access_layout.setVisibility(View.GONE);
             invalidateOptionsMenu();
@@ -279,6 +283,10 @@ public class DataDisplay extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    public void requestAccess(View view)
+    {
+        m_publish_add();
+    }
 
 
     public void m_publish_engine(boolean state) {
@@ -329,6 +337,7 @@ public class DataDisplay extends AppCompatActivity {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     //Toast.makeText(DataDisplay.this, "Subscribed to " + topic, Toast.LENGTH_SHORT).show();
+                    request_access.setVisibility(View.VISIBLE);
                 }
 
                 @Override
