@@ -24,16 +24,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/admin_login_button"
+        android:id="@+id/button_login"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="64dp"
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
         android:background="@drawable/ic_enter"
-        android:onClick="goAdminSettings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password" />
@@ -72,8 +71,19 @@
         android:hint="@string/password_display"
         android:inputType="textPassword"
         android:padding="4dp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username" />
+
+    <CheckBox
+        android:id="@+id/check_admin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Admin Mode"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintStart_toStartOf="@+id/password"
+        app:layout_constraintTop_toBottomOf="@+id/password" />
 
 </android.support.constraint.ConstraintLayout>
