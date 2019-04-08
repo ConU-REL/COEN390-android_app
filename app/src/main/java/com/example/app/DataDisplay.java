@@ -506,12 +506,18 @@ public class DataDisplay extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                         if(!is_admin) {
-                             Toast.makeText(DataDisplay.this, connected_user + " is waiting for access", Toast.LENGTH_SHORT).show();
+
+                         if(!is_admin)
+                         {
                              if(connected_user.equals(username) && access.equals("granted"))
                              {
                                  access_layout.setVisibility(View.GONE);
                              }
+                         }
+                         else
+                         {
+                             Toast.makeText(DataDisplay.this, connected_user + " is waiting for access", Toast.LENGTH_SHORT).show();
+
                          }
                             break;
 

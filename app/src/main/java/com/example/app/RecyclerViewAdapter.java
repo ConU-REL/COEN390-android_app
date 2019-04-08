@@ -19,17 +19,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private ArrayList<String> adddataInputsListText;
     SharedPreferencesHelper sharedPreferencesHelper;
+    private OnItemListener onItemListener;
     private Context context;
-    public RecyclerViewAdapter(ArrayList<String> adddataInputsListText, Context context) {
+    public RecyclerViewAdapter(ArrayList<String> adddataInputsListText, OnItemListener onItemListener) {
         this.adddataInputsListText = adddataInputsListText;
-        this.context = context;
+        this.onItemListener=onItemListener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int i) {
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_listitem,parent,false);
-        ViewHolder holder=new ViewHolder(view);
+        ViewHolder holder=new ViewHolder(view,onItemListener);
 
         return holder;
     }
@@ -38,18 +39,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
         viewHolder.image_name.setText(adddataInputsListText.get(i));
 
-        viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Toast.makeText(context,adddataInputsListText.get(i),Toast.LENGTH_SHORT).show();
-
-            }
-        });
-        if(viewHolder.checkBox.isChecked())
-        {
-            sharedPreferencesHelper.saveAccess(adddataInputsListText.get(i).toString());
-        }
 
 
     }
@@ -59,16 +48,27 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return adddataInputsListText.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView image_name;
         RelativeLayout parentLayout;
-        CheckBox checkBox;
-        public ViewHolder(@NonNull View itemView) {
+        OnItemListener onItemListener;
+        public ViewHolder(@NonNull View itemView,OnItemListener onItemListener) {
             super(itemView);
             image_name=itemView.findViewById(R.id.image_name);
             parentLayout=itemView.findViewById(R.id.parent_layout);
-            checkBox=itemView.findViewById(R.id.checkbox);
+            this.onItemListener=onItemListener;
+            itemView.setOnClickListener(this);
 
         }
+
+        @Override
+        public void onClick(View v) {
+            onItemListener.onNoteClick(getAdapterPosition());
+
+        }
+    }
+    public interface OnItemListener{
+
+        void onNoteClick(int position);
     }
 }

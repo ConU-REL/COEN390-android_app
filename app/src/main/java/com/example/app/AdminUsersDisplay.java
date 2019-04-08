@@ -30,7 +30,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class AdminUsersDisplay extends AppCompatActivity
+public class AdminUsersDisplay extends AppCompatActivity implements RecyclerViewAdapter.OnItemListener
 {
     protected RecyclerView connected_users_list;
     protected CheckBox checkBox;
@@ -40,6 +40,8 @@ public class AdminUsersDisplay extends AppCompatActivity
     List<String> UserInputsList;
     protected Button refress_button;
     MqttAndroidClient client;
+    String name=" ";
+    ArrayList<String> newList;
     SharedPreferencesHelper sharedPreferencesHelper;
     private ArrayList<String> adddataInputsListText;
 
@@ -108,7 +110,7 @@ public class AdminUsersDisplay extends AppCompatActivity
     {
 
 
-        RecyclerViewAdapter adapter=new RecyclerViewAdapter(adddataInputsListText,this);
+        RecyclerViewAdapter adapter=new RecyclerViewAdapter(newList,this);
         connected_users_list.setAdapter(adapter);
         connected_users_list.setLayoutManager(new LinearLayoutManager(this));
 
@@ -186,6 +188,7 @@ public class AdminUsersDisplay extends AppCompatActivity
               adddataInputsListText.add(temp);
 
        }
+                newList = removeDuplicates(adddataInputsListText);
         loadListView();
 
     }
@@ -197,7 +200,7 @@ public class AdminUsersDisplay extends AppCompatActivity
         msg = new JSONObject();
 
         try{
-            msg.put("username","jack");
+            msg.put("username",username);
             msg.put("request","granted");
         }catch(JSONException e)
         {
@@ -210,11 +213,32 @@ public class AdminUsersDisplay extends AppCompatActivity
             e.printStackTrace();
         }
     }
-    public void addUser(View view)
+    @Override
+    public void onNoteClick(int position) {
+        name=adddataInputsListText.get(position);
+        m_publish_access(name);
+        Toast.makeText(getBaseContext(),"Access granted to "+ name,Toast.LENGTH_SHORT).show();
+
+
+    }
+    public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list)
     {
 
-        m_publish_access("sam");
-        Toast.makeText(getBaseContext(),"Access granted to"+ sharedPreferencesHelper.getAccess(),Toast.LENGTH_SHORT).show();
-    }
+        // Create a new ArrayList
+        ArrayList<T> newList = new ArrayList<T>();
 
+        // Traverse through the first list
+        for (T element : list) {
+
+            // If this element is not present in newList
+            // then add it
+            if (!newList.contains(element)) {
+
+                newList.add(element);
+            }
+        }
+
+        // return the new list
+        return newList;
+    }
 }
