@@ -19,9 +19,9 @@ import java.util.List;
 public class ManageUsersActivity extends AppCompatActivity
 {
     protected ListView usersListView;
-    List<User> usersList;
-    protected Button addUserButton;
+    protected FloatingActionButton addUserFloatingButton;
 
+    List<User> usersList;
 
     private static final String TAG = "ManageUsersActivity";
 
@@ -31,19 +31,14 @@ public class ManageUsersActivity extends AppCompatActivity
         setContentView(R.layout.activity_manage_users);
 
         DatabaseHelper dbHelper=new DatabaseHelper(this);
-        //DatabaseHelper dbHelper=new DatabaseHelper(this);
-
-        //dbHelper.insertUsers(new User("Dave","Marechal"));
-        
-        dbHelper.insertUsers(new User("Dave","Marechal",-1)); //used as test for feature
-        dbHelper.insertUsers(new User("Ricky","team capitain",-1));  //used as test for feature
-
-
 
         usersListView = findViewById(R.id.usersListView);
-        addUserButton= (Button) findViewById(R.id.addUserButton);
+        addUserFloatingButton=findViewById(R.id.addUserFloatingActionButton);
+
 
         loadListView();
+
+
 
         usersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -52,15 +47,20 @@ public class ManageUsersActivity extends AppCompatActivity
             }
         });
 
-        addUserButton.setOnClickListener(new View.OnClickListener() {
+        addUserFloatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToSavedUsersActivity();
+
+                InsertUserDialogFragment dialog=new InsertUserDialogFragment();
+                dialog.show(getSupportFragmentManager(),"InsertUserFragment");
             }
         });
+
+
     }
 
     protected void loadListView() {
+
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         usersList = dbHelper.getAllUsers();
         ArrayList<String> usersListText = new ArrayList<>();
@@ -68,8 +68,8 @@ public class ManageUsersActivity extends AppCompatActivity
         for (int i = 0; i < usersList.size(); i++)
         {
             String temp = "";
-            temp += "Username:" + usersList.get(i).getUserName() + "\n";
-            temp += "Role:"+ usersList.get(i).getUserRole();
+            temp += "Username:"+ usersList.get(i).getUserName() + "\n";
+            temp += "Role:" +usersList.get(i).getUserRole();
 
             usersListText.add(temp);
 
@@ -95,17 +95,8 @@ public class ManageUsersActivity extends AppCompatActivity
         intent.putExtra("userName", userName);
         intent.putExtra("userRole", userRole);
         intent.putExtra("session_id",session_id);
-      
         startActivity(intent);
 
     }
-
-
-    public void goToSavedUsersActivity()
-    {
-        Intent intent2=new Intent(ManageUsersActivity.this,SavedUsersActivity.class);
-        startActivity(intent2);
-    }
-
 
 }
