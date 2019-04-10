@@ -50,8 +50,7 @@ public class InsertUserDialogFragment extends DialogFragment
                 DatabaseHelper dbHelper= new DatabaseHelper(getActivity());
                 if(!(name.equals("") || role.equals("")))
                     dbHelper.insertUsers(new User(name,role,-1));
-                ((SavedUsersActivity)getActivity()).loadListView(-1);
-                //((ManageUsersActivity)getActivity()).loadListView();
+                ((ManageUsersActivity)getActivity()).loadListView();
                 sharedPreferencesHelper.saveUserRole(role);
                 sharedPreferencesHelper.saveUserName(name);
                 getDialog().dismiss();
