@@ -35,17 +35,18 @@ public class UserInfosActivity extends AppCompatActivity
         setContentView(R.layout.activity_user_infos);
         final Bundle bundle = getIntent().getExtras();
         userID = bundle.getInt("usersID");
-        //role=bundle.getString("userRole");
+        role=bundle.getString("userRole");
         session_id = bundle.getLong("session_id");
         name = bundle.getString("userName");
         sharedPreferencesHelper = new SharedPreferencesHelper(this);
         databaseHelper = new DatabaseHelper(this);
         AlertDialog.Builder userBuilder = new AlertDialog.Builder(UserInfosActivity.this);
         View view = getLayoutInflater().inflate(R.layout.dialog_manage, null);
-        Button deleteUserButton = (Button) view.findViewById(R.id.cancelUserButton);
+        Button deleteUserButton = (Button) view.findViewById(R.id.deleteUserButton);
 
 
         TextView userInfoTextView = (TextView) view.findViewById(R.id.userInfoTextView);
+        userInfoTextView.setText("Username:"+name + "\n" + "Role:" +role);
 
         deleteUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
