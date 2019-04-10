@@ -1,10 +1,7 @@
-package com.example.d_gille.myapplication;
-
+package com.example.d_gille.manageusers;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,13 +9,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.d_gille.myapplication.Database.DatabaseHelper;
+import com.example.d_gille.manageusers.Database.DatabaseHelper;
 
 public class InsertUserDialogFragment extends DialogFragment
 {
-
-
-
     protected EditText userNameEditText;
     protected EditText userRoleEditText;
     protected Button saveUserButton;
@@ -70,3 +64,4 @@ public class InsertUserDialogFragment extends DialogFragment
 
 
 }
+
