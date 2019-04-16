@@ -9,48 +9,55 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/*
+ * This is the MainActivity, the btn_login screen
+ */
+
 public class MainActivity extends AppCompatActivity {
-
-
-    protected EditText username;
-    protected EditText password;
-    protected Button login;
-    protected CheckBox check_admin;
-
+    protected EditText field_username;
+    protected EditText field_password;
+    protected Button btn_login;
+    protected CheckBox checkbox_admin;
     SharedPreferencesHelper sharedPreferencesHelper;
-    Administrator admin=new Administrator("Admin","admin");
+    // create the administrator btn_login, would be improved in further sprints
+    Administrator admin = new Administrator("Admin", "admin");
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        username=findViewById(R.id.username);
-        password=findViewById(R.id.password);
-        sharedPreferencesHelper=new SharedPreferencesHelper(this);
+        setContentView(R.layout.activity_main);
 
-        login = findViewById(R.id.button_login);
-        check_admin = findViewById(R.id.check_admin);
+        sharedPreferencesHelper = new SharedPreferencesHelper(this);
 
-        check_admin.setOnClickListener(new View.OnClickListener() {
+        // locate fields
+        field_username = findViewById(R.id.username);
+        field_password = findViewById(R.id.password);
+        btn_login = findViewById(R.id.button_login);
+        checkbox_admin = findViewById(R.id.check_admin);
+
+        // listen for checkbox clicks, show/hide the password field when necessary
+        checkbox_admin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(check_admin.isChecked()){
-                    password.setVisibility(View.VISIBLE);
+                if (checkbox_admin.isChecked()) {
+                    field_password.setVisibility(View.VISIBLE);
                 } else {
-                    password.setVisibility(View.INVISIBLE);
+                    field_password.setVisibility(View.INVISIBLE);
                 }
             }
         });
 
-        login.setOnClickListener(new View.OnClickListener() {
+        // listen for clicks on the login button, validate login when clicked
+        btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(check_admin.isChecked()){
+                if (checkbox_admin.isChecked()) {
+                    // validate login
                     goAdmin();
                 } else {
-                    Intent intent=new Intent(MainActivity.this,DataDisplay.class);
-                    intent.putExtra("username",username.getText().toString());
+                    // login as user
+                    Intent intent = new Intent(MainActivity.this, DataDisplay.class);
+                    intent.putExtra("field_username", field_username.getText().toString());
                     intent.putExtra("admin", false);
                     startActivity(intent);
                 }
@@ -59,30 +66,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void goAdmin()
-    {
-        String nameInput = username.getText().toString();
-        String passwordInput = password.getText().toString();
-        String adminName=admin.getAdministratorName();
-        String adminPassword=admin.getPassword();
-
-        if(adminName.equals(nameInput))
-        {
-            if (adminPassword.equals(passwordInput))
-            {
-                Intent intent=new Intent(this,AdminAccess.class);
-                intent.putExtra("username",admin.getAdministratorName());
+    // validate credentials and goto admin dashboard if logging in as admin
+    public void goAdmin() {
+        int validation = admin.validateCreds(field_username, field_password);
+        switch (validation) {
+            case 0:
+                Intent intent = new Intent(this, AdminAccess.class);
+                intent.putExtra("field_username", admin.getUsername());
                 intent.putExtra("admin", true);
                 startActivity(intent);
-            }
-            else
-            {
-                Toast.makeText(MainActivity.this, "Wrong password!", Toast.LENGTH_SHORT).show();
-            }
-        }
-        else
-        {
-            Toast.makeText(MainActivity.this, "Invalid user!", Toast.LENGTH_SHORT).show();
+                break;
+            case 1:
+                Toast.makeText(MainActivity.this, "Invalid password.", Toast.LENGTH_SHORT).show();
+                break;
+            case 2:
+                Toast.makeText(MainActivity.this, "Invalid user.", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.example.app;
 
-import java.util.ArrayList;
+/*
+ * Class for sessions
+ */
 
 public class Sessions {
     private long session_id;
@@ -19,31 +21,15 @@ public class Sessions {
         return session_id;
     }
 
-    public void setSession_id(long session_id) {
-        this.session_id = session_id;
-    }
-
     public String getSession_name() {
         return session_name;
-    }
-
-    public void setSession_name(String session_name) {
-        this.session_name = session_name;
     }
 
     public String getUsers() {
         return users;
     }
 
-    public void setUsers(String users) {
-        this.users = users;
-    }
-
     public String getWarnings() {
         return warnings;
-    }
-
-    public void setWarnings(String warnings) {
-        this.warnings = warnings;
     }
 }

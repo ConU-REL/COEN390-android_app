@@ -1,33 +1,34 @@
 package com.example.app;
 
-public class Administrator
-{
-    private String administratorName;
+/*
+ * Administrator user class, stores credentials
+ */
+
+import android.widget.EditText;
+
+class Administrator {
+    private String username;
     private String password;
 
-    public Administrator(String name, String password)
-    {
-        administratorName=name;
-        this.password=password;
-    }
-
-    public String getAdministratorName()
-    {
-        return administratorName;
-    }
-
-    public void setAdministratorName(String administratorName)
-    {
-        this.administratorName = administratorName;
-    }
-
-    public String getPassword()
-    {
-        return password;
-    }
-
-    public void setPassword(String password)
-    {
+    Administrator(String name, String password) {
+        username = name;
         this.password = password;
+    }
+
+    String getUsername() {
+        return username;
+    }
+
+    // validate the given credentials
+    int validateCreds(EditText username, EditText password) {
+        if (username.getText().toString().equals(this.username)) {
+            if (password.getText().toString().equals(this.password)) {
+                return 0;
+            }
+            // return 1 if incorrect password
+            return 1;
+        }
+        // return 2 if incorrect username
+        return 2;
     }
 }

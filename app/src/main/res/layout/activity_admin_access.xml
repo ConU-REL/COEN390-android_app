@@ -137,7 +137,7 @@
                 android:layout_margin="10dp"
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:onClick="toManageUsers"
+                android:onClick="goManageUsers"
                 app:cardBackgroundColor="@color/colorLavender"
                 app:cardCornerRadius="80dp">
 
@@ -183,7 +183,7 @@
                 android:layout_margin="10dp"
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:onClick="goStartPage"
+                android:onClick="goLoginPage"
                 app:cardBackgroundColor="@color/colorLightRed"
                 app:cardCornerRadius="40dp">
 
@@ -207,16 +207,6 @@
 
         </LinearLayout>
     </LinearLayout>
-
-    <Switch
-        android:id="@+id/switch_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

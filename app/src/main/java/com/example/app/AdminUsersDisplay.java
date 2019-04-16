@@ -1,17 +1,13 @@
 package com.example.app;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -26,43 +22,51 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
-public class AdminUsersDisplay extends AppCompatActivity implements RecyclerViewAdapter.OnItemListener
-{
+public class AdminUsersDisplay extends AppCompatActivity implements RecyclerViewAdapter.OnItemListener {
     protected RecyclerView connected_users_list;
     protected CheckBox checkBox;
-
-    String MQTTtestHOST="tcp://broker.hivemq.com:1883";
-    String MQTTHOST="tcp://10.0.22.10:1883";
+    protected Button btn_refresh;
+    String MQTTtestHOST = "tcp://broker.hivemq.com:1883";
     List<String> UserInputsList;
-    protected Button refress_button;
     MqttAndroidClient client;
-    String name=" ";
+    String name = " ";
     ArrayList<String> newList;
-    SharedPreferencesHelper sharedPreferencesHelper;
-    private ArrayList<String> adddataInputsListText;
+
+    public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
+
+        // Create a new ArrayList
+        ArrayList<T> newList = new ArrayList<T>();
+
+        // Traverse through the first list
+        for (T element : list) {
+
+            // If this element is not present in newList
+            // then add it
+            if (!newList.contains(element)) {
+                newList.add(element);
+            }
+        }
+        // return the new list
+        return newList;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_users_display);
-        connected_users_list=findViewById(R.id.connected_users_list);
-        refress_button=findViewById(R.id.refresh_button);
-        checkBox=findViewById(R.id.checkbox);
+        // setup the activity
+        connected_users_list = findViewById(R.id.connected_users_list);
+        btn_refresh = findViewById(R.id.refresh_button);
+        checkBox = findViewById(R.id.checkbox);
 
-
-        refress_button.setOnClickListener(new View.OnClickListener() {
+        // listen for clicks on the refresh button
+        btn_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 finish();
                 startActivity(getIntent());
-
-
             }
         });
         m_connect();
@@ -70,28 +74,22 @@ public class AdminUsersDisplay extends AppCompatActivity implements RecyclerView
     }
 
 
-    private void m_connect()
-    {
-
+    // function to connect to the MQTT broker
+    private void m_connect() {
         String clientId = MqttClient.generateClientId();
         client = new MqttAndroidClient(this.getApplicationContext(), MQTTtestHOST,
                 clientId);
-        UserInputsList=new ArrayList<>();
-
+        UserInputsList = new ArrayList<>();
         try {
             IMqttToken token = client.connect();
-            token.setActionCallback(new IMqttActionListener()
-            {
+            token.setActionCallback(new IMqttActionListener() {
                 @Override
-                public void onSuccess(IMqttToken asyncActionToken)
-                {
+                public void onSuccess(IMqttToken asyncActionToken) {
                     // We are connected
                     Log.d("In MQTT_Connection", "onSuccess");
 
                     //m_subscribe_delete();
                     m_subscribe_add();
-
-
                 }
 
                 @Override
@@ -106,139 +104,101 @@ public class AdminUsersDisplay extends AppCompatActivity implements RecyclerView
 
     }
 
-    private void loadListView()
-    {
 
-
-        RecyclerViewAdapter adapter=new RecyclerViewAdapter(newList,this);
+    // function to initialize the list view and link the adapter
+    private void listview_init() {
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(newList, this);
         connected_users_list.setAdapter(adapter);
         connected_users_list.setLayoutManager(new LinearLayoutManager(this));
-
-
-
     }
 
-    public void m_subscribe_add()
-    {
-        String topic ="access/request";
-        int qos = 1;
+
+    // function to fill the list view
+    public void listview_populate() {
+        ArrayList<String> adddataInputsListText = new ArrayList<>(UserInputsList);
+        newList = removeDuplicates(adddataInputsListText);
+        listview_init();
+    }
+
+
+    // function to subscribe to a given topic
+    public void m_subscribe_add() {
+        String topic = "access/request";
         try {
-            IMqttToken subToken = client.subscribe(topic, qos);
-            subToken.setActionCallback(new IMqttActionListener()
-            {
+            IMqttToken subToken = client.subscribe(topic, 0);
+            subToken.setActionCallback(new IMqttActionListener() {
                 @Override
-                public void onSuccess(IMqttToken asyncActionToken)
-                {
-                    // The message was published
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    // don't care
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken,
                                       Throwable exception) {
-                    // The subscription could not be performed, maybe the user was not
-                    // authorized to subscribe on the specified topic e.g. using wildcards
-
+                    // don't care
                 }
             });
-        } catch (MqttException e)
-        {
+        } catch (MqttException e) {
             e.printStackTrace();
         }
 
-        client.setCallback(new MqttCallback()
-        {
+        client.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {
-
+                // don't care
             }
 
             @Override
-            public void messageArrived(String topic, MqttMessage message)throws JSONException {
-                final JSONObject msg = new JSONObject(new String (message.getPayload()));
+            public void messageArrived(String topic, MqttMessage message) throws JSONException {
+                // if message received on subscribed topic, extract the user and add to the list
+                final JSONObject msg = new JSONObject(new String(message.getPayload()));
                 String connected_user = " ";
                 try {
-                    connected_user = msg.getString("username");
+                    connected_user = msg.getString("field_username");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if(!connected_user.isEmpty())
-                UserInputsList.add(connected_user);
+                if (!connected_user.isEmpty())
+                    UserInputsList.add(connected_user);
 
-                addloadListView();
+                listview_populate();
             }
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {
-
+                // don't care
             }
         });
-
-
-
     }
-    public void addloadListView()
-    {
 
-       adddataInputsListText = new ArrayList<>();
-       for (int i = 0; i < UserInputsList.size(); i++)
-       {
-           String temp = "";
 
-               temp += UserInputsList.get(i);
-              adddataInputsListText.add(temp);
-
-       }
-                newList = removeDuplicates(adddataInputsListText);
-        loadListView();
-
-    }
-    public void m_publish_access(String username)
-    {
-
-        String topic ="access/request";
+    // function to publish the level of access that has been granted to the user (if any)
+    public void m_publish_access(String username) {
+        String topic = "access/request";
         JSONObject msg;
         msg = new JSONObject();
 
-        try{
-            msg.put("username",username);
-            msg.put("request","granted");
-        }catch(JSONException e)
-        {
+        // extract the info if it exists
+        try {
+            msg.put("field_username", username);
+            msg.put("request", "granted");
+        } catch (JSONException e) {
             throw new RuntimeException(e);
         }
 
+        // push the info if connected
         try {
-            client.publish(topic, msg.toString().getBytes(),0,true);
+            client.publish(topic, msg.toString().getBytes(), 0, true);
         } catch (MqttException e) {
             e.printStackTrace();
         }
     }
+
     @Override
+    // listen for list item clicks, grant access on click
     public void onNoteClick(int position) {
-        name=newList.get(position);
+        name = newList.get(position);
         m_publish_access(name);
-        Toast.makeText(getBaseContext(),"Access granted to "+ name,Toast.LENGTH_SHORT).show();
-
-
-    }
-    public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list)
-    {
-
-        // Create a new ArrayList
-        ArrayList<T> newList = new ArrayList<T>();
-
-        // Traverse through the first list
-        for (T element : list) {
-
-            // If this element is not present in newList
-            // then add it
-            if (!newList.contains(element)) {
-
-                newList.add(element);
-            }
-        }
-
-        // return the new list
-        return newList;
+        Toast.makeText(getBaseContext(), "Access granted to " + name, Toast.LENGTH_SHORT).show();
     }
 }
